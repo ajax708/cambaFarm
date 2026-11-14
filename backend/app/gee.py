@@ -96,18 +96,22 @@ def smap_recent(lat, lon, polygon=None, days=120) -> list[dict]:
         ee = _client()
         g = _geom(ee, lat, lon, polygon).centroid().buffer(4500)
         col = ee.ImageCollection("NASA/SMAP/SPL4SMGP/008").select("sm_surface")
-        end = ee.Date(col.sort("system:time_start", False).first().get("system:time_start"))
+        # latest image: look only at the last few weeks (sorting the whole collection runs out of memory)
+        now = ee.Date(int(time.time() * 1000))
+        end = ee.Date(col.filterDate(now.advance(-30, "day"), now).aggregate_max("system:time_start"))
         start = end.advance(-days, "day")
         n = ee.List.sequence(0, days - 1, 7)
+        past_years = ee.List.sequence(1, 9)  # SMAP L4 starts in 2015
+
+        def week_mean(d0):
+            return col.filterDate(d0, d0.advance(7, "day")).mean()
 
         def per_week(i):
             d0 = start.advance(i, "day")
-            v = col.filterDate(d0, d0.advance(7, "day")).mean().reduceRegion(
-                ee.Reducer.mean(), g, 9000).get("sm_surface")
-            # climatology for the same week, all years
-            doy = d0.getRelative("day", "year")
-            clim = col.filter(ee.Filter.calendarRange(doy, doy.add(6), "day_of_year")).mean() \
-                .reduceRegion(ee.Reducer.mean(), g, 9000).get("sm_surface")
+            v = week_mean(d0).reduceRegion(ee.Reducer.mean(), g, 9000).get("sm_surface")
+            # climatology: the same week in each of the previous years
+            clim_img = ee.ImageCollection(past_years.map(lambda y: week_mean(d0.advance(ee.Number(y).multiply(-1), "year")))).mean()
+            clim = clim_img.reduceRegion(ee.Reducer.mean(), g, 9000).get("sm_surface")
             return ee.Feature(None, {"t": d0.format("YYYY-MM-dd"), "sm": v, "clim": clim})
 
         feats = ee.FeatureCollection(n.map(per_week)).getInfo()["features"]
