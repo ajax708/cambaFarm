@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maqueta de pantallas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --page: #efe8da; --page-text: #3a332b; --page-muted: #7a7062;
+  --cream: #fbf6ec; --card: #ffffff; --ink: #2b2620; --muted: #6f665b; --line: #ece3d3;
+  --leaf: #2f7d4a; --leaf-d: #1f5a34; --leaf-l: #e3f1e6;
+  --sun: #f2b33d; --sun-l: #fdf0d2; --soil: #8a5a36; --soil-l: #f3e6d9; --terra: #c8643b; --sky: #d6ebf5;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --page: #1b1814; --page-text: #efe8da; --page-muted: #a89e8f; }
+}
+:root[data-theme="dark"] { --page: #1b1814; --page-text: #efe8da; --page-muted: #a89e8f; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--page-text); font: 16px/1.45 Nunito, system-ui, sans-serif; }
+.intro { max-width: 900px; margin: 0 auto; padding: 32px 16px 8px; text-align: center; }
+.intro h1 { font: 700 30px/1.15 Fraunces, Georgia, serif; margin: 0 0 6px; }
+.intro p { margin: 0; color: var(--page-muted); }
+.gallery { display: flex; flex-wrap: wrap; justify-content: center; gap: 36px 28px; padding: 28px 16px 48px; max-width: 1600px; margin: 0 auto; }
+figure { margin: 0; display: grid; gap: 12px; justify-items: center; }
+figcaption { text-align: center; max-width: 320px; font-size: 14px; color: var(--page-muted); }
+figcaption b { display: block; color: var(--page-text); font-size: 15px; }
+
+/* ---------- phone ---------- */
+.phone { width: min(340px, calc(100vw - 32px)); height: 720px; border-radius: 44px; background: #161412; padding: 10px;
+  box-shadow: 0 24px 60px rgba(40, 30, 15, .25); }
+.screen { position: relative; height: 100%; border-radius: 34px; overflow: hidden; background: var(--cream); color: var(--ink);
+  display: flex; flex-direction: column; }
+.status { display: flex; justify-content: space-between; padding: 12px 24px 4px; font-size: 12.5px; font-weight: 700; }
+.body { flex: 1; padding: 8px 20px 20px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+.topbar { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--muted); font-size: 14px; }
+.back { width: 34px; height: 34px; border-radius: 50%; background: var(--card); display: grid; place-items: center; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.dots { margin-left: auto; display: flex; gap: 5px; }
+.dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+.dots i.on { background: var(--leaf); width: 18px; border-radius: 4px; }
+h2 { font: 700 26px/1.15 Fraunces, Georgia, serif; margin: 0; letter-spacing: -.01em; }
+h3 { font: 600 19px/1.2 Fraunces, Georgia, serif; margin: 0; }
+.lead { color: var(--muted); margin: 0; font-size: 15.5px; }
+.btn { display: block; width: 100%; border: 0; border-radius: 18px; padding: 16px; font: 800 17px Nunito, sans-serif; text-align: center; cursor: pointer; }
+.btn.go { background: var(--leaf); color: #fff; box-shadow: 0 6px 16px rgba(47, 125, 74, .35); }
+.btn.soft { background: var(--card); color: var(--leaf-d); border: 2px solid var(--line); }
+.spacer { flex: 1; }
+.tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--leaf); }
+.small { font-size: 13px; color: var(--muted); }
+
+/* screen 1 */
+.hero { height: 330px; flex: none; }
+.welcome .body { padding-top: 18px; }
+.brand { display: flex; align-items: center; gap: 8px; font: 700 15px Fraunces, serif; color: var(--leaf-d); }
+
+/* screen 2 */
+.map { position: relative; height: 300px; border-radius: 24px; overflow: hidden; flex: none; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
+.map-chip { position: absolute; left: 12px; bottom: 12px; background: #fff; border-radius: 14px; padding: 8px 12px; font-weight: 800; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,.18); }
+.map-chip span { display: block; font-weight: 600; font-size: 12px; color: var(--muted); }
+.locate { display: flex; align-items: center; gap: 10px; background: var(--sky); color: #1d4f6b; border-radius: 16px; padding: 12px 14px; font-weight: 800; }
+
+/* screen 3 */
+.q { font-weight: 800; font-size: 15px; margin: 2px 0 -4px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.tile { background: var(--card); border: 2px solid var(--line); border-radius: 18px; padding: 10px 6px 10px; text-align: center; font-weight: 700; font-size: 13.5px; position: relative; }
+.tile svg { width: 54px; height: 54px; display: block; margin: 0 auto 4px; }
+.tile.on { border-color: var(--leaf); background: var(--leaf-l); }
+.tile.on::after { content: "✓"; position: absolute; top: 6px; right: 8px; width: 20px; height: 20px; border-radius: 50%; background: var(--leaf); color: #fff; font-size: 12px; line-height: 20px; }
+
+/* screen 4 */
+.loader { display: grid; place-items: center; height: 250px; flex: none; }
+.checks { display: grid; gap: 10px; }
+.check { display: flex; align-items: center; gap: 12px; background: var(--card); border-radius: 16px; padding: 12px 14px; font-weight: 700; font-size: 14.5px; }
+.check .ic { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; flex: none; color: #fff; font-size: 14px; background: var(--leaf); }
+.check.wait { color: var(--muted); }
+.check.wait .ic { background: var(--line); color: var(--muted); }
+
+/* screen 5 */
+.result-top { background: linear-gradient(180deg, var(--leaf-l), var(--cream)); margin: -8px -20px 0; padding: 8px 20px 0; }
+.crop-hero { display: flex; align-items: center; gap: 14px; }
+.crop-hero .circle { width: 72px; height: 72px; border-radius: 50%; background: #fff; display: grid; place-items: center; flex: none; box-shadow: 0 4px 14px rgba(47,125,74,.18); }
+.money { background: var(--leaf); color: #fff; border-radius: 22px; padding: 14px 16px; }
+.money .big { font: 700 32px/1 Fraunces, serif; white-space: nowrap; }
+.money .big small { font: 700 15px Nunito, sans-serif; opacity: .9; }
+.money p { margin: 6px 0 0; font-size: 14px; opacity: .92; }
+.facts { display: grid; gap: 8px; }
+.fact { display: flex; gap: 12px; align-items: center; background: var(--card); border-radius: 16px; padding: 8px 12px; font-size: 13.5px; line-height: 1.3; }
+.fact b { display: block; font-size: 14.5px; }
+.fact .ic { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; flex: none; }
+
+/* screen 6 */
+.opt { display: flex; gap: 12px; align-items: center; background: var(--card); border: 2px solid var(--line); border-radius: 20px; padding: 6px 12px 6px 6px; }
+.opt.best { border-color: var(--leaf); }
+.opt .pic { width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; flex: none; }
+.opt .pic svg { width: 40px; height: 40px; }
+.opt .name { font-weight: 800; font-size: 15.5px; }
+.opt .chip { display: inline-block; font-size: 11.5px; font-weight: 800; border-radius: 999px; padding: 1px 8px; margin-top: 2px; }
+.opt .val { margin-left: auto; text-align: right; font: 700 18px Fraunces, serif; white-space: nowrap; }
+.opt .val small { display: block; font: 600 11px Nunito, sans-serif; color: var(--muted); }
+.up { color: var(--leaf); } .down { color: var(--terra); }
+
+/* screen 7 */
+.winters { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; background: var(--card); border-radius: 20px; padding: 12px 10px 10px; }
+.winters span { aspect-ratio: 1; display: grid; place-items: center; border-radius: 8px; background: var(--leaf-l); }
+.winters span.miss { background: var(--soil-l); }
+.winters svg { width: 70%; height: 70%; }
+.yrs { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); padding: 0 4px; margin-top: -8px; }
+.legend { display: flex; gap: 14px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+.total { background: var(--sun-l); border-radius: 18px; padding: 12px 14px; font-size: 14.5px; }
+.total b { font: 700 22px Fraunces, serif; display: block; color: var(--ink); }
+
+/* screen 8 */
+.why { display: flex; gap: 12px; background: var(--card); border-radius: 18px; padding: 12px; }
+.why .pic { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; flex: none; }
+.why b { display: block; font-size: 15px; }
+.why p { margin: 2px 0 0; font-size: 13.5px; color: var(--muted); }
+.why .src { display: inline-block; margin-top: 4px; font-size: 11px; font-weight: 800; color: #1d4f6b; background: var(--sky); border-radius: 6px; padding: 0 6px; }
+.unknown { border: 2px dashed var(--line); border-radius: 18px; padding: 10px 14px; font-size: 13.5px; color: var(--muted); }
+.unknown b { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<!-- reusable crop drawings -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="soya" viewBox="0 0 64 64">
+      <path d="M32 60V30" stroke="#3f8f57" stroke-width="3" stroke-linecap="round"/>
+      <path d="M32 34c-10-2-16-10-16-18 9 0 16 7 16 18z" fill="#4fa565"/>
+      <path d="M32 30c9-3 14-11 13-19-9 1-14 9-13 19z" fill="#3f8f57"/>
+      <rect x="35" y="36" width="10" height="22" rx="5" fill="#9cc56a" transform="rotate(18 40 47)"/>
+      <circle cx="38.5" cy="41" r="2.4" fill="#cfe39a"/><circle cx="40" cy="47" r="2.4" fill="#cfe39a"/><circle cx="41.5" cy="53" r="2.4" fill="#cfe39a"/>
+    </symbol>
+    <symbol id="maiz" viewBox="0 0 64 64">
+      <path d="M22 58c2-14 4-26 10-38" stroke="#3f8f57" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="36" cy="30" rx="9" ry="20" fill="#f2c443" transform="rotate(12 36 30)"/>
+      <g fill="#e2a92a"><circle cx="34" cy="18" r="2"/><circle cx="39" cy="20" r="2"/><circle cx="33" cy="25" r="2"/><circle cx="38" cy="27" r="2"/><circle cx="33" cy="32" r="2"/><circle cx="37" cy="34" r="2"/><circle cx="32" cy="39" r="2"/><circle cx="36" cy="41" r="2"/></g>
+      <path d="M28 50c-2-14 0-24 6-30-1 12 0 20 -6 30z" fill="#4fa565"/>
+      <path d="M40 52c4-12 4-22 0-30 6 8 9 18 0 30z" fill="#3f8f57"/>
+    </symbol>
+    <symbol id="sorgo" viewBox="0 0 64 64">
+      <path d="M32 60V22" stroke="#3f8f57" stroke-width="3" stroke-linecap="round"/>
+      <path d="M32 46c-10-2-15-8-17-14 8 0 14 4 17 14z" fill="#4fa565"/>
+      <path d="M32 40c9-1 14-7 16-13-8 0-13 4-16 13z" fill="#3f8f57"/>
+      <g fill="#c8643b"><circle cx="32" cy="8" r="3.2"/><circle cx="28" cy="12" r="3.2"/><circle cx="36" cy="12" r="3.2"/><circle cx="32" cy="15" r="3.2"/><circle cx="27" cy="18" r="3.2"/><circle cx="37" cy="18" r="3.2"/><circle cx="32" cy="21" r="3.2"/></g>
+      <g fill="#e08a5f"><circle cx="30" cy="10" r="1.4"/><circle cx="35" cy="16" r="1.4"/><circle cx="29" cy="19" r="1.4"/></g>
+    </symbol>
+    <symbol id="girasol" viewBox="0 0 64 64">
+      <path d="M32 62V34" stroke="#3f8f57" stroke-width="3" stroke-linecap="round"/>
+      <path d="M32 50c-8 0-13-5-14-10 7 0 12 3 14 10z" fill="#4fa565"/>
+      <g fill="#f2b33d" transform="translate(32 22)">
+        <ellipse rx="5" ry="11" transform="rotate(0)"/><ellipse rx="5" ry="11" transform="rotate(45)"/>
+        <ellipse rx="5" ry="11" transform="rotate(90)"/><ellipse rx="5" ry="11" transform="rotate(135)"/>
+      </g>
+      <circle cx="32" cy="22" r="7.5" fill="#7a4e2d"/>
+    </symbol>
+    <symbol id="trigo" viewBox="0 0 64 64">
+      <path d="M32 62V12" stroke="#c99a3a" stroke-width="2.5" stroke-linecap="round"/>
+      <g fill="#e5b450">
+        <ellipse cx="27" cy="18" rx="4" ry="7" transform="rotate(-25 27 18)"/><ellipse cx="37" cy="18" rx="4" ry="7" transform="rotate(25 37 18)"/>
+        <ellipse cx="27" cy="29" rx="4" ry="7" transform="rotate(-25 27 29)"/><ellipse cx="37" cy="29" rx="4" ry="7" transform="rotate(25 37 29)"/>
+        <ellipse cx="27" cy="40" rx="4" ry="7" transform="rotate(-25 27 40)"/><ellipse cx="37" cy="40" rx="4" ry="7" transform="rotate(25 37 40)"/>
+        <ellipse cx="32" cy="9" rx="3.5" ry="6"/>
+      </g>
+    </symbol>
+    <symbol id="cobertura" viewBox="0 0 64 64">
+      <path d="M8 52h48" stroke="#8a5a36" stroke-width="5" stroke-linecap="round"/>
+      <g fill="#4fa565"><circle cx="20" cy="38" r="7"/><circle cx="28" cy="34" r="7"/><circle cx="24" cy="28" r="7"/></g>
+      <g fill="#3f8f57"><circle cx="40" cy="40" r="6"/><circle cx="46" cy="36" r="6"/><circle cx="42" cy="31" r="6"/></g>
+      <path d="M24 50v-14M43 50v-12" stroke="#2f7d4a" stroke-width="2.5" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="barbecho" viewBox="0 0 64 64">
+      <path d="M6 44c8-4 18-6 26-6s18 2 26 6v12H6z" fill="#b98557"/>
+      <path d="M14 46l6 4-3 5M34 44l-2 6 5 4M48 47l-4 4" stroke="#8a5a36" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <circle cx="46" cy="18" r="9" fill="#f2b33d"/>
+    </symbol>
+    <symbol id="sprout" viewBox="0 0 24 24">
+      <path d="M12 21v-8" stroke="#2f7d4a" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M12 14c-5 0-7-4-7-7 4 0 7 2 7 7z" fill="#4fa565"/>
+      <path d="M12 12c0-4 3-7 7-7 0 4-3 7-7 7z" fill="#2f7d4a"/>
+    </symbol>
+    <symbol id="cross" viewBox="0 0 24 24">
+      <path d="M7 7l10 10M17 7L7 17" stroke="#8a5a36" stroke-width="2.6" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="arrow" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="leaf" viewBox="0 0 24 24"><path d="M5 19c0-9 6-14 15-14 0 9-5 15-14 15" fill="#2f7d4a"/><path d="M5 19l8-8" stroke="#fbf6ec" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="intro">
+  <h1>Maqueta: “Gana plata en invierno”</h1>
+  <p>El recorrido del productor, pantalla por pantalla. Números reales del motor (Santa Cruz, −17.40, −63.20).</p>
+</header>
+
+<main class="gallery">
+
+  <!-- 1. Bienvenida -->
+  <figure>
+    <div class="phone"><div class="screen welcome">
+      <svg class="hero" viewBox="0 0 320 330" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe6f2"/><stop offset="1" stop-color="#fbf6ec"/></linearGradient></defs>
+        <rect width="320" height="330" fill="url(#sky)"/>
+        <circle cx="250" cy="78" r="34" fill="#f2b33d"/><circle cx="250" cy="78" r="48" fill="#f2b33d" opacity=".18"/>
+        <path d="M0 190c60-40 130-46 200-26s90 10 120-6v172H0z" fill="#8fc27f"/>
+        <path d="M0 220c80-30 170-28 320-4v114H0z" fill="#b98557"/>
+        <g stroke="#8a5a36" stroke-width="3" opacity=".55"><path d="M-20 330L120 222"/><path d="M40 330L150 220"/><path d="M110 330L180 220"/><path d="M180 330L210 221"/><path d="M250 330L240 224"/><path d="M320 330L270 226"/></g>
+        <g transform="translate(70 240) scale(.55)"><use href="#sprout" width="24" height="24"/></g>
+        <g transform="translate(150 262) scale(.8)"><use href="#sprout" width="24" height="24"/></g>
+        <g transform="translate(225 246) scale(.6)"><use href="#sprout" width="24" height="24"/></g>
+        <g transform="translate(100 290) scale(1)"><use href="#sprout" width="24" height="24"/></g>
+        <g transform="translate(250 288) scale(1.1)"><use href="#sprout" width="24" height="24"/></g>
+      </svg>
+      <div class="body">
+        <div class="brand"><svg width="20" height="20"><use href="#leaf"/></svg>[Nombre]</div>
+        <h2>Tu campo puede ganar plata en invierno</h2>
+        <p class="lead">Después de la soya, la tierra queda desnuda casi todo el año. Te mostramos qué habría pasado si sembrabas algo en invierno — en tu propio campo, en los últimos 45 años.</p>
+        <div class="spacer"></div>
+        <button class="btn go">Ver mi campo</button>
+      </div>
+    </div></div>
+    <figcaption><b>1 · Bienvenida</b>Una promesa clara y un solo botón. Nada de formularios todavía.</figcaption>
+  </figure>
+
+  <!-- 2. Ubicación -->
+  <figure>
+    <div class="phone"><div class="screen">
+      <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+      <div class="body">
+        <div class="topbar"><span class="back"><svg width="18" height="18"><use href="#arrow"/></svg></span>Paso 1 de 2<span class="dots"><i class="on"></i><i></i></span></div>
+        <h2>¿Dónde está tu campo?</h2>
+        <div class="map">
+          <svg viewBox="0 0 300 300" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="300" height="300" fill="#7fa86a"/>
+            <rect x="-10" y="-10" width="140" height="120" fill="#9bbd72" transform="rotate(-6)"/>
+            <rect x="150" y="10" width="170" height="110" fill="#b8a06e" transform="rotate(-6 150 10)"/>
+            <rect x="10" y="140" width="120" height="170" fill="#6e9a5c" transform="rotate(-6 10 140)"/>
+            <rect x="140" y="150" width="180" height="160" fill="#a38a5c" transform="rotate(-6 140 150)"/>
+            <path d="M0 128L300 96" stroke="#e9dfc8" stroke-width="7"/>
+            <path d="M136 0L160 300" stroke="#e9dfc8" stroke-width="5"/>
+            <path d="M170 140l110-12 14 120-112 14z" fill="#f2b33d" fill-opacity=".25" stroke="#f2b33d" stroke-width="3" stroke-dasharray="7 5"/>
+            <g fill="#fff" stroke="#f2b33d" stroke-width="3"><circle cx="170" cy="140" r="6"/><circle cx="280" cy="128" r="6"/><circle cx="294" cy="248" r="6"/><circle cx="182" cy="262" r="6"/></g>
+          </svg>
+          <div class="map-chip">Tu lote: 120 ha<span>Toca las esquinas para ajustarlo</span></div>
+        </div>
+        <div class="locate">
+          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="#1d4f6b"/><circle cx="12" cy="12" r="8" fill="none" stroke="#1d4f6b" stroke-width="2"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4" stroke="#1d4f6b" stroke-width="2" stroke-linecap="round"/></svg>
+          Usar mi ubicación
+        </div>
+        <div class="spacer"></div>
+        <button class="btn go">Seguir</button>
+      </div>
+    </div></div>
+    <figcaption><b>2 · Tu campo</b>Mapa grande y “usar mi ubicación”. Suelo, clima y pendiente se buscan solos.</figcaption>
+  </figure>
+
+  <!-- 3. Qué siembras -->
+  <figure>
+    <div class="phone"><div class="screen">
+      <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+      <div class="body">
+        <div class="topbar"><span class="back"><svg width="18" height="18"><use href="#arrow"/></svg></span>Paso 2 de 2<span class="dots"><i></i><i class="on"></i></span></div>
+        <h2>¿Qué haces hoy en tu campo?</h2>
+        <p class="q">En verano siembro…</p>
+        <div class="tiles">
+          <div class="tile on"><svg><use href="#soya"/></svg>Soya</div>
+          <div class="tile"><svg><use href="#maiz"/></svg>Maíz</div>
+          <div class="tile"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="20" fill="#f3e6d9"/><path d="M32 22v20M22 32h20" stroke="#8a5a36" stroke-width="4" stroke-linecap="round"/></svg>Otro</div>
+        </div>
+        <p class="q">Y en invierno…</p>
+        <div class="tiles">
+          <div class="tile on"><svg><use href="#barbecho"/></svg>Lo dejo descansar</div>
+          <div class="tile"><svg><use href="#trigo"/></svg>Trigo</div>
+          <div class="tile"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="20" fill="#f3e6d9"/><path d="M32 22v20M22 32h20" stroke="#8a5a36" stroke-width="4" stroke-linecap="round"/></svg>Otro</div>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn go">Ver qué habría pasado</button>
+      </div>
+    </div></div>
+    <figcaption><b>3 · Lo que haces hoy</b>Dibujos grandes en vez de listas. Dos toques y listo.</figcaption>
+  </figure>
+
+  <!-- 4. Calculando -->
+  <figure>
+    <div class="phone"><div class="screen">
+      <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+      <div class="body">
+        <div class="loader">
+          <svg width="220" height="220" viewBox="0 0 220 220" aria-hidden="true">
+            <circle cx="110" cy="130" r="70" fill="#d6ebf5"/>
+            <path d="M48 150c20-14 40-12 62-4s44 6 64-6c-6 32-34 54-64 54s-56-18-62-44z" fill="#8fc27f"/>
+            <circle cx="110" cy="130" r="70" fill="none" stroke="#2f7d4a" stroke-width="3" stroke-dasharray="4 8"/>
+            <g transform="translate(150 34) rotate(25)">
+              <rect x="-10" y="-8" width="20" height="16" rx="3" fill="#6f665b"/>
+              <rect x="-38" y="-6" width="24" height="12" fill="#2a78d6"/><rect x="14" y="-6" width="24" height="12" fill="#2a78d6"/>
+            </g>
+            <path d="M140 52l-24 64" stroke="#f2b33d" stroke-width="3" stroke-dasharray="5 5"/>
+            <circle cx="114" cy="122" r="6" fill="#f2b33d"/>
+          </svg>
+        </div>
+        <h2>Revisando 45 inviernos en tu campo…</h2>
+        <div class="checks">
+          <div class="check"><span class="ic">✓</span>Lluvia y temperatura de cada día desde 1981</div>
+          <div class="check"><span class="ic">✓</span>Tipo de suelo de tu lote</div>
+          <div class="check wait"><span class="ic">…</span>Cómo se ve tu campo desde el satélite</div>
+        </div>
+      </div>
+    </div></div>
+    <figcaption><b>4 · Calculando</b>La espera (hasta ~13 s) se usa para contar qué datos de la NASA estamos mirando.</figcaption>
+  </figure>
+
+  <!-- 5. Resultado -->
+  <figure>
+    <div class="phone"><div class="screen">
+      <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+      <div class="body">
+        <div class="result-top">
+          <span class="tag">★ Tu mejor opción de invierno</span>
+          <div class="crop-hero" style="margin-top:8px">
+            <div class="circle"><svg width="64" height="64"><use href="#sorgo"/></svg></div>
+            <h2 style="font-size:22px">Siembra sorgo después de la soya</h2>
+          </div>
+        </div>
+        <div class="money">
+          <div class="big">+ USD 323</div><p style="margin-top:2px">por hectárea, cada año</p>
+          <p style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.25)">En tus 120 ha son unos <b>USD 38.800 más</b> cada año.</p>
+        </div>
+        <div class="facts">
+          <div class="fact"><span class="ic" style="background:var(--leaf-l)"><svg width="24" height="24"><use href="#sprout"/></svg></span><div><b>Funcionó en 44 de 45 inviernos</b>Y ni un año perdió plata.</div></div>
+          <div class="fact"><span class="ic" style="background:var(--soil-l)"><svg width="26" height="26"><use href="#barbecho"/></svg></span><div><b>Tu suelo queda protegido</b>Desnudo 3 meses al año en vez de 9.</div></div>
+          <div class="fact"><span class="ic" style="background:var(--sun-l)"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="#f2b33d"/><g stroke="#f2b33d" stroke-width="2" stroke-linecap="round"><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></g></svg></span><div><b>Este año viene El Niño</b>En los 15 años así, nunca falló.</div></div>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn go">¿Cómo lo sabemos?</button>
+        <button class="btn soft" style="margin-top:-6px">Ver otras opciones</button>
+      </div>
+    </div></div>
+    <figcaption><b>5 · La respuesta</b>Una sola recomendación, en plata y en palabras. Todo lo demás está a un toque.</figcaption>
+  </figure>
+
+  <!-- 6. Otras opciones -->
+  <figure>
+    <div class="phone"><div class="screen">
+      <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+      <div class="body">
+        <div class="topbar"><span class="back"><svg width="18" height="18"><use href="#arrow"/></svg></span>Opciones para tu invierno</div>
+        <h2 style="font-size:23px">Cada campo es distinto. Elige la tuya.</h2>
+        <div class="opt best"><span class="pic" style="background:var(--leaf-l)"><svg><use href="#sorgo"/></svg></span><div><div class="name">Sorgo</div><span class="chip" style="background:var(--leaf-l);color:var(--leaf-d)">La más segura</span></div><div class="val up">+323<small>USD/ha/año</small></div></div>
+        <div class="opt"><span class="pic" style="background:var(--sun-l)"><svg><use href="#girasol"/></svg></span><div><div class="name">Girasol</div><span class="chip" style="background:var(--sun-l);color:#8a5a00">La que más paga</span></div><div class="val up">+405<small>USD/ha/año</small></div></div>
+        <div class="opt"><span class="pic" style="background:#f6efd9"><svg><use href="#trigo"/></svg></span><div><div class="name">Trigo</div><span class="chip" style="background:#f6efd9;color:#7a5a1a">La conocida</span></div><div class="val up">+274<small>USD/ha/año</small></div></div>
+        <div class="opt"><span class="pic" style="background:var(--leaf-l)"><svg><use href="#cobertura"/></svg></span><div><div class="name">Cultivo de cobertura</div><span class="chip" style="background:var(--leaf-l);color:var(--leaf-d)">Cuida tu suelo</span></div><div class="val down">−60<small>USD/ha/año</small></div></div>
+        <div class="opt" style="opacity:.75"><span class="pic" style="background:var(--soil-l)"><svg><use href="#barbecho"/></svg></span><div><div class="name">Barbecho</div><span class="chip" style="background:var(--soil-l);color:var(--soil)">Lo que haces hoy</span></div><div class="val">0<small>punto de partida</small></div></div>
+        <p class="small" style="margin:0">Montos comparados con dejar el campo en barbecho.</p>
+      </div>
+    </div></div>
+    <figcaption><b>6 · Otras opciones</b>Cada una con su “personalidad” en una etiqueta, en vez de puntajes.</figcaption>
+  </figure>
+
+  <!-- 7. 45 inviernos -->
+  <figure>
+    <div class="phone"><div class="screen">
+      <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+      <div class="body">
+        <div class="topbar"><span class="back"><svg width="18" height="18"><use href="#arrow"/></svg></span>Sorgo en invierno</div>
+        <h2>Así le habría ido en 45 inviernos</h2>
+        <p class="lead">Cada plantita es un invierno en tu campo, desde 1981 hasta hoy.</p>
+        <div class="winters" id="winters"></div>
+        <div class="yrs"><span>1981</span><span>2026</span></div>
+        <div class="legend"><span><i style="background:var(--leaf-l);box-shadow:inset 0 0 0 2px #4fa565"></i>Buena cosecha</span><span><i style="background:var(--soil-l);box-shadow:inset 0 0 0 2px #b98557"></i>No se pudo sembrar</span></div>
+        <div class="total">En total habrías ganado<b>USD 14.559 más por hectárea</b>que dejando el campo descansar.</div>
+      </div>
+    </div></div>
+    <figcaption><b>7 · La prueba</b>45 años de clima NASA hechos visibles: plantitas en vez de gráficos de barras.</figcaption>
+  </figure>
+
+  <!-- 8. Cómo lo sabemos -->
+  <figure>
+    <div class="phone"><div class="screen">
+      <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+      <div class="body">
+        <div class="topbar"><span class="back"><svg width="18" height="18"><use href="#arrow"/></svg></span>¿Cómo lo sabemos?</div>
+        <h2>Lo que los satélites ven de tu campo</h2>
+        <div class="why"><span class="pic" style="background:var(--sky)"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M6 15a4 4 0 010-8 5 5 0 019.6-1A4 4 0 1118 15z" fill="#7fb3d0"/><g stroke="#2a78d6" stroke-width="2" stroke-linecap="round"><path d="M8 18l-1 3M12 18l-1 3M16 18l-1 3"/></g></svg></span><div><b>La lluvia y el calor de cada día</b><p>Desde 1981. Así sabemos cuántos inviernos fueron secos.</p><span class="src">NASA POWER · GPM</span></div></div>
+        <div class="why"><span class="pic" style="background:var(--leaf-l)"><svg width="30" height="30"><use href="#sprout"/></svg></span><div><b>Cuándo tu campo está verde</b><p>El satélite ve que hoy tu lote pasa 9 meses al año sin nada.</p><span class="src">Landsat</span></div></div>
+        <div class="why"><span class="pic" style="background:var(--soil-l)"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M12 3c4 5 6 8 6 11a6 6 0 01-12 0c0-3 2-6 6-11z" fill="#8a5a36"/></svg></span><div><b>Cuánta agua tiene tu suelo ahora</b><p>Para saber si este invierno arranca con humedad.</p><span class="src">SMAP</span></div></div>
+        <div class="unknown"><b>Lo que no sabemos:</b> los precios del próximo año, las plagas de esta campaña y si hay comprador de sorgo cerca. Consúltalo con tu técnico.</div>
+      </div>
+    </div></div>
+    <figcaption><b>8 · Por qué confiar</b>La evidencia NASA explicada como lo haría un vecino, con la fuente a la vista.</figcaption>
+  </figure>
+
+</main>
+
+<script>
+  // 45 winters, 1981-82 … 2025-26; 2016-17 could not be sown (engine result).
+  const box = document.getElementById('winters');
+  for (let y = 1981; y < 2026; y++) {
+    const s = document.createElement('span');
+    const miss = y === 2016;
+    s.className = miss ? 'miss' : '';
+    s.title = `Invierno ${y + 1}: ${miss ? 'no se pudo sembrar' : 'buena cosecha'}`;
+    s.innerHTML = `<svg><use href="#${miss ? 'cross' : 'sprout'}"/></svg>`;
+    box.appendChild(s);
+  }
+</script>
+</body>
+</html>

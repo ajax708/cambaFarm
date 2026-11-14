@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[NOMBRE] · Mockup</title>
+<meta name="description" content="Mockup estático de alta fidelidad: la historia completa de la app, con números reales del motor (Santa Cruz, -17.40, -63.20).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --bg:#f6f1e7; --surface:#fffcf5; --surface-2:#efe8d8; --border:#ded4bf;
+  --ink:#1d2419; --ink-2:#48513f; --muted:#666b5b;
+  --today:#c2622a;   /* lo que haces hoy: suelo / barbecho (validado CVD vs --opt) */
+  --opt:#00806a;     /* opción recomendada */
+  --water:#2a6f8f;   /* lluvia / humedad */
+  --accent:#b9821a;  /* cosecha, solo decorativo, nunca texto */
+  --good:#2d7a3a; --warn:#946000; --bad:#b3412e;
+  --hero-bg:#1f3a2c; --hero-ink:#f6f1e7; --hero-ink-2:#c9d6c4;
+  --grid:#e6dfcf; --axis:#b9b09b;
+  --radius:16px; --shadow:0 1px 2px rgba(40,30,10,.06),0 6px 24px rgba(40,30,10,.06);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#121611; --surface:#1a2019; --surface-2:#232b21; --border:#333c30;
+    --ink:#ece6d6; --ink-2:#c3bfae; --muted:#9d9c8a;
+    --today:#d4733a; --opt:#1fa287; --water:#5ab0c8; --accent:#e0ac4a;
+    --good:#5cb867; --warn:#e0a63a; --bad:#e2725e;
+    --hero-bg:#0e1f17; --hero-ink:#ece6d6; --hero-ink-2:#a9bba5;
+    --grid:#2a3228; --axis:#4a5446;
+    --shadow:none; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121611; --surface:#1a2019; --surface-2:#232b21; --border:#333c30;
+  --ink:#ece6d6; --ink-2:#c3bfae; --muted:#9d9c8a;
+  --today:#d4733a; --opt:#1fa287; --water:#5ab0c8; --accent:#e0ac4a;
+  --good:#5cb867; --warn:#e0a63a; --bad:#e2725e;
+  --hero-bg:#0e1f17; --hero-ink:#ece6d6; --hero-ink-2:#a9bba5;
+  --grid:#2a3228; --axis:#4a5446; --shadow:none; color-scheme:dark;
+}
+
+/* ============ BASE ============ */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.5 "Source Sans 3",system-ui,sans-serif;font-variant-numeric:tabular-nums}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:650;line-height:1.12;margin:0;letter-spacing:-.01em}
+p{margin:0}
+.muted{color:var(--muted)}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+.wide{max-width:1080px}
+section.block{padding:40px 0;border-top:1px solid var(--border)}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+.eyebrow .num{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--surface-2);color:var(--ink);font-size:12px;letter-spacing:0}
+.lead{font-size:19px;color:var(--ink-2);margin-top:10px;max-width:60ch}
+h2{font-size:clamp(26px,6vw,36px);margin-top:10px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:999px;font:700 17px/1 "Source Sans 3",sans-serif;border:0;cursor:pointer;text-decoration:none}
+.btn-primary{background:var(--ink);color:var(--bg)}
+.btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--border)}
+.icon{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.src{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.src .icon{width:15px;height:15px}
+.scene{display:inline-block;font:600 11px/1 ui-monospace,Consolas,monospace;color:var(--muted);border:1px dashed var(--axis);border-radius:6px;padding:4px 6px;margin-bottom:12px}
+
+/* ============ TOP BAR ============ */
+.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+.wordmark{display:flex;align-items:center;gap:8px;font:650 20px/1 Fraunces,serif;color:var(--ink)}
+.wordmark .icon{width:24px;height:24px;stroke:var(--opt)}
+.lang{display:flex;border:1px solid var(--border);border-radius:999px;overflow:hidden}
+.lang span{padding:6px 12px;font-size:14px;font-weight:700;color:var(--muted)}
+.lang span.on{background:var(--ink);color:var(--bg)}
+
+/* ============ 1 HOOK ============ */
+.hero{background:var(--hero-bg);color:var(--hero-ink);padding:56px 0 48px;position:relative;overflow:hidden}
+.hero h1{font-size:clamp(40px,11vw,72px);max-width:12ch}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .lead{color:var(--hero-ink-2);font-size:20px}
+.hero .btn-primary{background:var(--hero-ink);color:var(--hero-bg);margin-top:28px}
+.hero .src{color:var(--hero-ink-2);margin-top:20px}
+.hero-stat{display:flex;gap:14px;align-items:center;margin-top:28px;padding:14px 16px;border:1px solid rgba(255,255,255,.14);border-radius:14px;max-width:440px}
+.hero-stat b{font:650 34px/1 Fraunces,serif;color:var(--hero-ink)}
+.hero-stat span{color:var(--hero-ink-2);font-size:15px;line-height:1.35}
+.hero-art{position:absolute;right:-40px;bottom:-30px;width:340px;opacity:.16;pointer-events:none}
+@media (max-width:600px){.hero-art{width:220px;right:-60px}}
+
+/* ============ 2 FIELD ============ */
+.field-grid{display:grid;gap:16px;margin-top:24px}
+@media (min-width:820px){.field-grid{grid-template-columns:1.2fr 1fr}}
+.q{font:650 20px/1.2 Fraunces,serif;margin-bottom:12px;display:flex;gap:10px;align-items:baseline}
+.q small{font:600 13px "Source Sans 3";color:var(--muted)}
+.map{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:4/3;background:#4d5a3a}
+.map > svg{width:100%;height:100%;display:block}
+.map .hint{position:absolute;left:10px;right:10px;bottom:10px;background:rgba(20,25,18,.78);color:#f3efe3;font-size:14px;padding:8px 12px;border-radius:10px;display:flex;gap:8px;align-items:center}
+.map .tools{position:absolute;top:10px;left:10px;display:flex;gap:6px}
+.map .tools span{background:#fffcf5;color:#1d2419;font-size:13px;font-weight:700;padding:6px 10px;border-radius:999px}
+.map .tools span.on{background:#1d2419;color:#fffcf5}
+.choices{display:grid;gap:8px}
+.choice{display:flex;align-items:center;gap:12px;padding:14px;border:1.5px solid var(--border);border-radius:12px;background:var(--surface);font-weight:600;min-height:56px}
+.choice .dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--axis);flex:none}
+.choice.on{border-color:var(--ink)}
+.choice.on .dot{border:6px solid var(--ink)}
+.choice small{display:block;font-weight:400;color:var(--muted);font-size:14px}
+.auto{margin-top:16px;padding:14px;border-radius:12px;background:var(--surface-2);font-size:15px}
+.auto ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px}
+.auto li{display:flex;gap:8px;align-items:center}
+.auto li .icon{width:16px;height:16px;color:var(--good)}
+.auto a{color:var(--ink);font-weight:600}
+.cta-row{margin-top:20px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+
+/* ============ 3 REPLAY ============ */
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;color:var(--ink-2);margin:14px 0 6px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.legend i.opt{background:var(--opt)}
+.legend i.line{height:0;border-top:2px dashed var(--today);border-radius:0;width:16px;vertical-align:3px}
+.legend i.x{background:none;width:auto;height:auto;font-style:normal;color:var(--bad);font-weight:700}
+.legend i.water{background:var(--water)}
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.chart .grid{stroke:var(--grid);stroke-width:1}
+.chart .axis{stroke:var(--axis);stroke-width:1}
+.chart .tick{fill:var(--muted);font-size:14px;font-family:"Source Sans 3",sans-serif}
+.chart .annot{fill:var(--ink-2);font-size:10.5px;font-weight:600;font-family:"Source Sans 3",sans-serif}
+.chart .leader{stroke:var(--axis);stroke-width:1}
+.chart .bar-opt{fill:var(--opt)}
+.chart .bar-opt:hover,.chart .bar-water:hover{opacity:.75}
+.chart .bar-water{fill:var(--water)}
+.chart .bar-water.hi{fill:var(--ink-2)}
+.chart .bar-today-line{stroke:var(--today);stroke-width:2;stroke-dasharray:4 3}
+.chart .fail path{stroke:var(--bad);stroke-width:2;fill:none}
+@media (min-width:640px){.chart .tick{font-size:8px}}
+.tally{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.tally div{background:var(--surface-2);border-radius:12px;padding:12px}
+.tally b{display:block;font:650 26px/1.1 Fraunces,serif}
+.tally span{font-size:14px;color:var(--ink-2);line-height:1.3;display:block;margin-top:2px}
+.sum{display:flex;gap:14px;align-items:center;margin-top:16px;padding:16px;border-radius:14px;border:1.5px solid var(--opt)}
+.sum b{font:650 28px/1 Fraunces,serif;white-space:nowrap}
+.sum span{font-size:15px;color:var(--ink-2)}
+.chart-foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:10px}
+.linkish{font-size:15px;font-weight:700;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+
+/* ============ 4 VERDICT ============ */
+.verdict{margin-top:24px;border:2px solid var(--ink);padding:24px;position:relative}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding:5px 10px;border-radius:999px;background:var(--surface-2);color:var(--ink)}
+.badge .icon{width:14px;height:14px;color:var(--opt)}
+.verdict h3{font-size:clamp(30px,8vw,44px);margin-top:12px}
+.verdict .rot{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.big{margin-top:18px}
+.big b{font:650 clamp(44px,13vw,68px)/1 Fraunces,serif;letter-spacing:-.02em}
+.big span{display:block;color:var(--ink-2);font-size:17px;margin-top:4px}
+.facts{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:12px}
+.facts li{display:flex;gap:12px;align-items:flex-start;font-size:17px}
+.facts li .ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--surface-2);flex:none}
+.facts li .ic .icon{width:20px;height:20px}
+.facts li b{font-weight:700}
+.vs{margin-top:20px;padding-top:16px;border-top:1px solid var(--border);font-size:15px;color:var(--ink-2);display:flex;gap:8px;align-items:flex-start}
+.vs i{display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--today);margin-top:6px;flex:none}
+.watch{margin-top:12px;font-size:15px;display:flex;gap:8px;align-items:flex-start;color:var(--ink-2)}
+.watch .icon{color:var(--warn);width:18px;height:18px;margin-top:2px}
+.alts{display:grid;gap:12px;margin-top:20px}
+@media (min-width:720px){.alts{grid-template-columns:repeat(3,1fr)}}
+.alt{padding:16px}
+.alt .tag{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.alt h4{font:650 21px/1.2 Fraunces,serif;margin:6px 0 10px}
+.alt .m{font:650 26px/1 Fraunces,serif}
+.alt .m small{font:400 14px "Source Sans 3";color:var(--muted)}
+.alt ul{margin:10px 0 0;padding-left:18px;font-size:15px;color:var(--ink-2);display:grid;gap:4px}
+.alt .note{margin-top:10px;font-size:14px;color:var(--ink-2);display:flex;gap:6px}
+.alt .note .icon{width:16px;height:16px;color:var(--warn);margin-top:2px}
+
+/* ============ 5 WHY ============ */
+.steps{display:flex;gap:6px;margin-top:20px}
+.steps span{flex:1;height:4px;border-radius:2px;background:var(--border)}
+.steps span.on{background:var(--ink)}
+.ev{margin-top:16px}
+.ev + .ev{margin-top:16px}
+.ev h3{font-size:22px;margin:6px 0 4px}
+.ev .k{font-size:13px;font-weight:700;color:var(--muted)}
+.ev p.sub{color:var(--ink-2);font-size:16px}
+.ev .foot{margin-top:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.cal{margin-top:16px;display:grid;gap:8px}
+.cal-row{display:grid;grid-template-columns:96px 1fr 58px;gap:8px;align-items:center}
+.cal-l{font-size:13px;font-weight:600;color:var(--ink-2);line-height:1.2}
+.cal-cells{display:grid;grid-template-columns:repeat(12,1fr);gap:2px}
+.cal-head .cal-cells span{font-size:11px;color:var(--muted);text-align:center}
+.cal-c{height:30px;border-radius:4px}
+.cal-c.cov.today{background:var(--today)}
+.cal-c.cov.opt{background:var(--opt)}
+.cal-c.bare{background:repeating-linear-gradient(45deg,var(--surface-2) 0 3px,transparent 3px 7px);border:1.5px solid var(--axis)}
+.cal-n{font-size:12px;color:var(--ink-2);line-height:1.15}
+.cal-n b{font:650 18px Fraunces,serif;color:var(--ink)}
+.season-bar{display:grid;grid-template-columns:96px 1fr 58px;gap:8px;font-size:11px;color:var(--muted)}
+.season-bar div{display:grid;grid-template-columns:5fr 7fr;gap:2px}
+.season-bar span{border-top:2px solid var(--axis);padding-top:3px;text-align:center}
+.legend .bare{background:repeating-linear-gradient(45deg,var(--surface-2) 0 2px,transparent 2px 5px);border:1.5px solid var(--axis)}
+.legend .today{background:var(--today)}
+.illus{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--warn);border:1px dashed var(--warn);border-radius:999px;padding:3px 9px}
+.sat-row{display:grid;gap:16px}
+@media (min-width:720px){.sat-row{grid-template-columns:1fr 1fr}}
+.gauge{margin-top:14px}
+.gauge-track{position:relative;height:14px;border-radius:7px;background:linear-gradient(90deg,var(--surface-2),var(--surface-2))}
+.gauge-norm{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--ink-2);left:50%}
+.gauge-now{position:absolute;top:0;height:14px;border-radius:7px;background:var(--water);left:0;width:41%}
+.gauge-labels{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:8px}
+.ndvi-strip{display:grid;grid-template-columns:repeat(12,1fr);gap:2px;margin-top:14px}
+.ndvi-strip span{height:28px;border-radius:4px}
+.n-hi{background:var(--opt)}
+.n-mid{background:color-mix(in srgb,var(--opt) 45%,var(--surface-2))}
+.n-lo{background:repeating-linear-gradient(45deg,var(--surface-2) 0 3px,transparent 3px 7px);border:1.5px solid var(--axis)}
+
+/* ============ 6 SEASON ============ */
+.season{display:grid;gap:16px;margin-top:24px}
+@media (min-width:820px){.season{grid-template-columns:1fr 1.1fr}}
+.enso-head{display:flex;gap:14px;align-items:center}
+.enso-head .sun{width:56px;height:56px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;flex:none}
+.enso-head .sun .icon{width:30px;height:30px;color:var(--accent)}
+.meter{margin-top:14px}
+.meter-track{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.meter-track span{height:10px;border-radius:3px;background:var(--surface-2)}
+.meter-track span.f{background:var(--ink-2)}
+.meter-l{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+.plain{margin-top:16px;display:grid;gap:10px;font-size:17px}
+.plain li{display:flex;gap:10px;align-items:flex-start}
+.plain .icon{color:var(--good);margin-top:3px}
+.hbars{display:grid;gap:14px;margin-top:12px}
+.hb-group{padding:10px;border-radius:12px}
+.hb-group.now{background:var(--surface-2)}
+.hb-label{font-weight:700;font-size:15px;margin-bottom:6px}
+.tag-now{font-size:11px;font-weight:700;background:var(--ink);color:var(--bg);border-radius:999px;padding:2px 8px;margin-left:4px;vertical-align:1px}
+.hb{display:grid;grid-template-columns:48px 1fr 52px;gap:8px;align-items:center;font-size:14px;margin-top:4px}
+.hb-k{color:var(--ink-2)}
+.hb b{text-align:right}
+.hb-track{height:14px}
+.hb-fill{display:block;height:100%;border-radius:0 4px 4px 0}
+.hb-fill.today{background:var(--today)}
+.hb-fill.opt{background:var(--opt)}
+
+/* ============ 7 ADJUST ============ */
+details.adj{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);margin-top:12px}
+details.adj > summary{list-style:none;cursor:pointer;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:700;font-size:17px;min-height:56px}
+details.adj > summary::-webkit-details-marker{display:none}
+details.adj > summary small{display:block;font-weight:400;color:var(--muted);font-size:14px}
+details.adj > summary .chev{transition:transform .2s}
+details.adj[open] > summary .chev{transform:rotate(180deg)}
+.adj-body{padding:0 20px 20px}
+.profiles{display:grid;gap:8px}
+@media (min-width:640px){.profiles{grid-template-columns:repeat(3,1fr)}}
+.profile{border:1.5px solid var(--border);border-radius:12px;padding:14px;background:var(--bg)}
+.profile.on{border-color:var(--ink);background:var(--surface)}
+.profile b{display:flex;gap:8px;align-items:center;font-size:17px}
+.profile span{display:block;font-size:14px;color:var(--ink-2);margin-top:4px}
+.profile .res{margin-top:8px;font-size:13px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--border);border-radius:999px;padding:8px 14px;font-size:15px;font-weight:600;min-height:40px;display:inline-flex;align-items:center;gap:6px}
+.chip.off{text-decoration:line-through;color:var(--muted);border-style:dashed}
+.prices{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.price label{display:block;font-size:14px;color:var(--ink-2);margin-bottom:4px}
+.price .in{border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-weight:700;background:var(--bg)}
+.price .in small{color:var(--muted);font-weight:400}
+.seg{display:inline-flex;border:1.5px solid var(--border);border-radius:999px;overflow:hidden;flex-wrap:wrap}
+.seg span{padding:9px 14px;font-weight:600;font-size:15px}
+.seg span.on{background:var(--ink);color:var(--bg)}
+
+/* ============ FOOTER / STATES ============ */
+.honest ul{margin:12px 0 0;padding-left:20px;color:var(--ink-2);display:grid;gap:6px}
+.sources{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.sources span{font-size:13px;border:1px solid var(--border);border-radius:8px;padding:4px 8px;color:var(--ink-2)}
+.states{display:grid;gap:12px;margin-top:20px}
+@media (min-width:720px){.states{grid-template-columns:repeat(3,1fr)}}
+.state{border-style:dashed}
+.state h4{font:700 15px "Source Sans 3";margin:0 0 6px}
+.state p{font-size:15px;color:var(--ink-2)}
+.prog{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:6px;font-size:14px}
+.prog li{display:flex;gap:8px;align-items:center}
+.prog .ok{color:var(--good)}
+.prog .run{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);border-top-color:var(--ink);animation:spin 1s linear infinite;flex:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.prog .run{animation:none}}
+.skel{height:12px;border-radius:6px;background:var(--surface-2);margin-top:8px}
+footer{padding:32px 0 48px;color:var(--muted);font-size:14px;border-top:1px solid var(--border)}
+.sticky-cta{position:sticky;bottom:12px;display:flex;justify-content:center;margin-top:24px;pointer-events:none}
+.sticky-cta .btn{pointer-events:auto;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+</style>
+</head>
+<body>
+
+<!-- Iconos (sprite) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-sprout" viewBox="0 0 24 24"><path d="M12 21v-9"/><path d="M12 12C12 7 8.5 4 4 4c0 4.5 3 8 8 8z"/><path d="M12 14c0-4 3-7 8-7 0 4-3 7-8 7z"/></symbol>
+  <symbol id="i-sat" viewBox="0 0 24 24"><path d="M13 7 9 3 5 7l4 4"/><path d="m17 11 4 4-4 4-4-4"/><path d="m8 12 4 4 6-6-4-4z"/><path d="M16 8l3-3"/><path d="M9 21a6 6 0 0 0-6-6"/></symbol>
+  <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.5-1-1.6-1.5-3-1.5-1.7 0-3 .8-3 2s1.3 1.8 3 2 3 .8 3 2-1.3 2-3 2c-1.4 0-2.5-.5-3-1.5M12 6.5v11"/></symbol>
+  <symbol id="i-soil" viewBox="0 0 24 24"><path d="M3 14h18"/><path d="M5 18h2M10 18h4M17 18h2M7 21h2M14 21h2"/><path d="M12 14V8"/><path d="M12 10c0-2.5-2-4-4.5-4 0 2.5 2 4 4.5 4zM12 9c0-2.2 1.8-3.6 4-3.6 0 2.2-1.8 3.6-4 3.6z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.4M8.2 13.2l7.6 4.4"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="wrap wide">
+    <div class="wordmark"><svg class="icon"><use href="#i-sprout"/></svg>[NOMBRE]</div>
+    <div class="lang" role="group" aria-label="Idioma"><span class="on">ES</span><span>EN</span></div>
+  </div>
+</header>
+
+<!-- ================= 1 · GANCHO ================= -->
+<section class="hero">
+  <svg class="hero-art" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><use href="#i-sprout"/></svg>
+  <div class="wrap wide">
+    <div class="scene" style="color:var(--hero-ink-2);border-color:rgba(255,255,255,.3)">Escena 1 · demo 0–4 s</div>
+    <h1>Gana plata en <em>invierno</em>.</h1>
+    <p class="lead">Después de la soya, tu campo queda vacío hasta noviembre. Repasamos 45 años de clima de la NASA en <b>tu</b> lote para mostrarte qué cultivo de invierno habría pagado, y cuántas veces habría fallado.</p>
+    <div class="hero-stat"><b>9 meses</b><span>al año queda con el suelo desnudo un lote de soya con barbecho en Santa Cruz: sin ingreso y expuesto al viento.</span></div>
+    <a class="btn btn-primary" href="#campo">Ver mi campo <svg class="icon"><use href="#i-arrow"/></svg></a>
+    <div><span class="src"><svg class="icon"><use href="#i-sat"/></svg>Con datos de NASA POWER, Landsat, SMAP y GPM · gratis · 2 preguntas</span></div>
+  </div>
+</section>
+
+<main>
+<!-- ================= 2 · TU CAMPO ================= -->
+<section class="block" id="campo" style="border-top:0">
+  <div class="wrap wide">
+    <div class="scene">Escena 2 · demo 4–8 s</div>
+    <div class="eyebrow"><span class="num">1</span>Tu campo</div>
+    <h2>Dos preguntas y listo.</h2>
+    <p class="lead">El resto (suelo, altura, pendiente, clima) lo buscamos nosotros.</p>
+    <div class="field-grid">
+      <div class="card">
+        <div class="q">¿Dónde está tu campo?</div>
+        <div class="map">
+          <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-label="Mapa satelital con el lote marcado">
+            <rect width="400" height="300" fill="#5b6b3f"/>
+            <g opacity=".9">
+              <rect x="0" y="0" width="140" height="110" fill="#7b8a4a"/><rect x="144" y="0" width="120" height="110" fill="#a08a5c"/>
+              <rect x="268" y="0" width="132" height="110" fill="#6d7d45"/><rect x="0" y="114" width="90" height="190" fill="#9b8458"/>
+              <rect x="94" y="114" width="180" height="90" fill="#b39a68"/><rect x="278" y="114" width="122" height="190" fill="#7a8a4c"/>
+              <rect x="94" y="208" width="180" height="92" fill="#6f7f47"/>
+            </g>
+            <path d="M0 112 H400 M92 112 V300 M276 112 V300 M142 0 V112 M266 0 V112 M92 206 H276" stroke="#d8cfb4" stroke-width="3" opacity=".6"/>
+            <path d="M330 0 C300 80 360 150 320 300" stroke="#3d6f7a" stroke-width="7" fill="none" opacity=".7"/>
+            <polygon points="104,122 266,120 268,198 100,202" fill="rgba(224,172,74,.25)" stroke="#e0ac4a" stroke-width="3"/>
+            <g fill="#fffcf5" stroke="#1d2419" stroke-width="2"><circle cx="104" cy="122" r="6"/><circle cx="266" cy="120" r="6"/><circle cx="268" cy="198" r="6"/><circle cx="100" cy="202" r="6"/></g>
+            <text x="185" y="166" text-anchor="middle" fill="#fffcf5" font-size="16" font-weight="700" font-family="Source Sans 3,sans-serif">≈ 120 ha</text>
+          </svg>
+          <div class="tools"><span>Marcar punto</span><span class="on">Dibujar lote</span><span>Mi ubicación</span></div>
+          <div class="hint"><svg class="icon"><use href="#i-pin"/></svg>Toca las esquinas de tu lote. Puedes moverlas después.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="q">¿Qué siembras hoy? <small>una opción</small></div>
+        <div class="choices" role="radiogroup">
+          <div class="choice on" role="radio" aria-checked="true"><span class="dot"></span><span>Soya en verano y lo dejo descansar en invierno<small>Lo más común en Santa Cruz</small></span></div>
+          <div class="choice" role="radio" aria-checked="false"><span class="dot"></span><span>Soya y trigo en invierno</span></div>
+          <div class="choice" role="radio" aria-checked="false"><span class="dot"></span><span>Soya y sorgo o girasol en invierno</span></div>
+          <div class="choice" role="radio" aria-checked="false"><span class="dot"></span><span>Otra cosa<small>Te mostramos todas las opciones</small></span></div>
+        </div>
+        <div class="auto">
+          <b>Encontramos esto de tu campo:</b>
+          <ul>
+            <li><svg class="icon"><use href="#i-check"/></svg>Suelo franco arcilloso <span class="muted">(SoilGrids)</span></li>
+            <li><svg class="icon"><use href="#i-check"/></svg>314 m de altura · terreno plano (1 %)</li>
+            <li><svg class="icon"><use href="#i-check"/></svg>Clima diario 1981–2026 <span class="muted">(NASA POWER)</span></li>
+          </ul>
+          <div style="margin-top:8px"><a href="#ajustar">¿Algo no está bien? Corrígelo</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="cta-row"><a class="btn btn-primary" href="#repaso">Repasar 45 inviernos <svg class="icon"><use href="#i-arrow"/></svg></a><span class="muted" style="font-size:15px">Tarda unos segundos.</span></div>
+  </div>
+</section>
+
+<!-- ================= 3 · EL REPASO ================= -->
+<section class="block" id="repaso">
+  <div class="wrap">
+    <div class="scene">Escena 3 · demo 8–15 s (las barras crecen año a año)</div>
+    <div class="eyebrow"><span class="num">2</span>45 inviernos en tu campo</div>
+    <h2>Si desde 1981 hubieras sembrado sorgo después de la soya…</h2>
+    <p class="lead">Pasamos el clima real de cada año, día por día, por tu lote. Así le habría ido al sorgo de invierno, frente a dejar el campo descansar.</p>
+    <div class="card" style="margin-top:20px">
+      <div style="font-weight:700">Lo que dejó cada invierno <span class="muted" style="font-weight:400">· USD por hectárea</span></div>
+      <div class="legend"><span><i class="opt"></i>Sorgo de invierno</span><span><i class="line"></i>Hoy: barbecho (−25, costo de mantenerlo limpio)</span><span><i class="x">✕</i>No se pudo sembrar (2016-17)</span></div>
+      <svg class="chart" viewBox="0 0 360 180" role="img" aria-labelledby="rp-t rp-d"><title id="rp-t">Resultado de cada invierno, 1981 a 2025</title><desc id="rp-d">Barras: ganancia del sorgo de invierno por hectárea cada año. Línea punteada: barbecho, menos 25 dólares todos los años.</desc><line class="grid" x1="34" x2="360" y1="148.0" y2="148.0"/><text class="tick" x="30" y="151.0" text-anchor="end">0</text><line class="grid" x1="34" x2="360" y1="104.0" y2="104.0"/><text class="tick" x="30" y="107.0" text-anchor="end">100</text><line class="grid" x1="34" x2="360" y1="60.0" y2="60.0"/><text class="tick" x="30" y="63.0" text-anchor="end">200</text><line class="grid" x1="34" x2="360" y1="16.0" y2="16.0"/><text class="tick" x="30" y="19.0" text-anchor="end">300</text><path class="bar-opt" d="M38.0 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>1981-82: sorgo +300 USD/ha · lluvia de invierno 617 mm</title></path><path class="bar-opt" d="M45.4 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>1982-83: sorgo +300 USD/ha · lluvia de invierno 705 mm</title></path><path class="bar-opt" d="M52.8 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>1983-84: sorgo +300 USD/ha · lluvia de invierno 257 mm</title></path><path class="bar-opt" d="M60.2 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>1984-85: sorgo +300 USD/ha · lluvia de invierno 322 mm</title></path><path class="bar-opt" d="M67.6 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>1985-86: sorgo +300 USD/ha · lluvia de invierno 525 mm</title></path><path class="bar-opt" d="M75.0 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>1986-87: sorgo +300 USD/ha · lluvia de invierno 597 mm</title></path><path class="bar-opt" d="M82.4 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>1987-88: sorgo +300 USD/ha · lluvia de invierno 354 mm</title></path><path class="bar-opt" d="M89.80000000000001 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>1988-89: sorgo +300 USD/ha · lluvia de invierno 432 mm</title></path><path class="bar-opt" d="M97.2 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>1989-90: sorgo +300 USD/ha · lluvia de invierno 512 mm</title></path><path class="bar-opt" d="M104.60000000000001 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>1990-91: sorgo +300 USD/ha · lluvia de invierno 527 mm</title></path><path class="bar-opt" d="M112.0 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>1991-92: sorgo +300 USD/ha · lluvia de invierno 840 mm</title></path><path class="bar-opt" d="M119.4 148 v-129.6 q0 -2 2 -2 h2 q2 0 2 2 v129.6 z"><title>1992-93: sorgo +299 USD/ha · lluvia de invierno 250 mm</title></path><path class="bar-opt" d="M126.80000000000001 148 v-126.5 q0 -2 2 -2 h2 q2 0 2 2 v126.5 z"><title>1993-94: sorgo +292 USD/ha · lluvia de invierno 227 mm</title></path><path class="bar-opt" d="M134.2 148 v-128.2 q0 -2 2 -2 h2 q2 0 2 2 v128.2 z"><title>1994-95: sorgo +296 USD/ha · lluvia de invierno 278 mm</title></path><path class="bar-opt" d="M141.60000000000002 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>1995-96: sorgo +300 USD/ha · lluvia de invierno 466 mm</title></path><path class="bar-opt" d="M149.0 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>1996-97: sorgo +300 USD/ha · lluvia de invierno 324 mm</title></path><path class="bar-opt" d="M156.4 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>1997-98: sorgo +300 USD/ha · lluvia de invierno 335 mm</title></path><path class="bar-opt" d="M163.8 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>1998-99: sorgo +300 USD/ha · lluvia de invierno 364 mm</title></path><path class="bar-opt" d="M171.20000000000002 148 v-129.1 q0 -2 2 -2 h2 q2 0 2 2 v129.1 z"><title>1999-00: sorgo +298 USD/ha · lluvia de invierno 455 mm</title></path><path class="bar-opt" d="M178.6 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>2000-01: sorgo +300 USD/ha · lluvia de invierno 579 mm</title></path><path class="bar-opt" d="M186.0 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>2001-02: sorgo +300 USD/ha · lluvia de invierno 487 mm</title></path><path class="bar-opt" d="M193.4 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>2002-03: sorgo +300 USD/ha · lluvia de invierno 391 mm</title></path><path class="bar-opt" d="M200.8 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>2003-04: sorgo +300 USD/ha · lluvia de invierno 287 mm</title></path><path class="bar-opt" d="M208.20000000000002 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>2004-05: sorgo +300 USD/ha · lluvia de invierno 280 mm</title></path><path class="bar-opt" d="M215.60000000000002 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>2005-06: sorgo +300 USD/ha · lluvia de invierno 323 mm</title></path><path class="bar-opt" d="M223.0 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>2006-07: sorgo +300 USD/ha · lluvia de invierno 280 mm</title></path><path class="bar-opt" d="M230.4 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>2007-08: sorgo +300 USD/ha · lluvia de invierno 382 mm</title></path><path class="bar-opt" d="M237.8 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>2008-09: sorgo +300 USD/ha · lluvia de invierno 368 mm</title></path><path class="bar-opt" d="M245.20000000000002 148 v-124.7 q0 -2 2 -2 h2 q2 0 2 2 v124.7 z"><title>2009-10: sorgo +288 USD/ha · lluvia de invierno 193 mm</title></path><path class="bar-opt" d="M252.60000000000002 148 v-102.3 q0 -2 2 -2 h2 q2 0 2 2 v102.3 z"><title>2010-11: sorgo +237 USD/ha · lluvia de invierno 119 mm</title></path><path class="bar-opt" d="M260.0 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>2011-12: sorgo +300 USD/ha · lluvia de invierno 430 mm</title></path><path class="bar-opt" d="M267.4 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>2012-13: sorgo +300 USD/ha · lluvia de invierno 597 mm</title></path><path class="bar-opt" d="M274.8 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>2013-14: sorgo +300 USD/ha · lluvia de invierno 685 mm</title></path><path class="bar-opt" d="M282.20000000000005 148 v-104.0 q0 -2 2 -2 h2 q2 0 2 2 v104.0 z"><title>2014-15: sorgo +241 USD/ha · lluvia de invierno 302 mm</title></path><path class="bar-opt" d="M289.6 148 v-129.6 q0 -2 2 -2 h2 q2 0 2 2 v129.6 z"><title>2015-16: sorgo +299 USD/ha · lluvia de invierno 323 mm</title></path><g class="fail"><title>2016-17: sorgo no se sembró · lluvia de invierno 0 mm</title><path d="M297.0 140 l6 6 M303.0 140 l-6 6" /></g><path class="bar-opt" d="M304.40000000000003 148 v-112.4 q0 -2 2 -2 h2 q2 0 2 2 v112.4 z"><title>2017-18: sorgo +260 USD/ha · lluvia de invierno 207 mm</title></path><path class="bar-opt" d="M311.8 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>2018-19: sorgo +300 USD/ha · lluvia de invierno 413 mm</title></path><path class="bar-opt" d="M319.2 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>2019-20: sorgo +300 USD/ha · lluvia de invierno 326 mm</title></path><path class="bar-opt" d="M326.6 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>2020-21: sorgo +300 USD/ha · lluvia de invierno 329 mm</title></path><path class="bar-opt" d="M334.0 148 v-122.5 q0 -2 2 -2 h2 q2 0 2 2 v122.5 z"><title>2021-22: sorgo +283 USD/ha · lluvia de invierno 234 mm</title></path><path class="bar-opt" d="M341.40000000000003 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>2022-23: sorgo +300 USD/ha · lluvia de invierno 540 mm</title></path><path class="bar-opt" d="M348.8 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>2023-24: sorgo +300 USD/ha · lluvia de invierno 349 mm</title></path><path class="bar-opt" d="M356.2 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>2024-25: sorgo +300 USD/ha · lluvia de invierno 678 mm</title></path><path class="bar-opt" d="M363.6 148 v-130.0 q0 -2 2 -2 h2 q2 0 2 2 v130.0 z"><title>2025-26: sorgo +300 USD/ha · lluvia de invierno 556 mm</title></path><line class="bar-today-line" x1="34" x2="360" y1="159.0" y2="159.0"/><line class="axis" x1="34" x2="360" y1="148" y2="148"/><text class="tick" x="38.0" y="178">1981</text><text class="tick" x="112.0" y="178">1991</text><text class="tick" x="186.0" y="178">2001</text><text class="tick" x="260.0" y="178">2011</text><text class="tick" x="334.0" y="178">2021</text></svg>
+      <div class="tally">
+        <div><b>44</b><span>inviernos buenos</span></div>
+        <div><b>0</b><span>inviernos con pérdida</span></div>
+        <div><b>1</b><span>no se pudo sembrar</span></div>
+      </div>
+      <div class="sum"><svg class="icon" style="width:28px;height:28px;color:var(--opt)"><use href="#i-coin"/></svg><div><b>+USD 14.559</b><span> por hectárea en 45 años, comparado con lo que haces hoy.</span></div></div>
+      <div class="chart-foot">
+        <span class="src"><svg class="icon"><use href="#i-sat"/></svg>Clima: NASA POWER, 1981–2026 · precios de referencia</span>
+        <a class="linkish" href="#">Ver como tabla</a>
+      </div>
+    </div>
+    <p class="muted" style="margin-top:12px;font-size:15px">2016-17: la lluvia llegó tarde, la soya se sembró a fin de diciembre y se cosechó en mayo. Ya no hubo tiempo para el sorgo; ese invierno el campo quedó como hoy.</p>
+  </div>
+</section>
+
+<!-- ================= 4 · VEREDICTO ================= -->
+<section class="block" id="veredicto">
+  <div class="wrap wide">
+    <div class="scene">Escena 4 · demo 15–21 s</div>
+    <div class="eyebrow"><span class="num">3</span>Nuestra recomendación</div>
+    <h2>Para tu campo, el invierno que más conviene:</h2>
+    <div class="alts" style="grid-template-columns:1fr">
+    <div class="card verdict">
+      <span class="badge"><svg class="icon"><use href="#i-check"/></svg>El mejor equilibrio entre plata, riesgo y suelo</span>
+      <h3 class="rot">Soya → sorgo</h3>
+      <div class="big"><b>+USD 323</b><span>más por hectárea al año que hoy · en 120 ha, unos USD 38.800 por año</span></div>
+      <ul class="facts">
+        <li><span class="ic"><svg class="icon" style="color:var(--opt)"><use href="#i-soil"/></svg></span><span><b>174 días menos</b> de suelo desnudo al año (de 264 a 90).</span></li>
+        <li><span class="ic"><svg class="icon" style="color:var(--bad)"><use href="#i-x"/></svg></span><span><b>Falló 1 de 45 inviernos</b>, y fue porque no hubo tiempo para sembrarlo.</span></li>
+        <li><span class="ic"><svg class="icon" style="color:var(--good)"><use href="#i-shield"/></svg></span><span><b>Ningún año perdió plata</b> frente a dejar el campo vacío. Su peor año igual dejó +USD 183/ha.</span></li>
+      </ul>
+      <div class="vs"><i></i><span>Hoy, con soya y barbecho, ganas en promedio <b>USD 642/ha al año</b>. Con sorgo en invierno, <b>USD 965</b>.</span></div>
+      <div class="watch"><svg class="icon"><use href="#i-alert"/></svg><span>Antes de decidir: el mercado de sorgo es más chico. Consulta si hay comprador cerca.</span></div>
+      <div class="cta-row"><a class="btn btn-primary" href="#porque">¿Por qué sorgo? <svg class="icon"><use href="#i-arrow"/></svg></a><a class="btn btn-ghost" href="#"><svg class="icon"><use href="#i-share"/></svg>Enviar a mi técnico</a></div>
+    </div>
+    </div>
+    <div style="margin-top:28px;font-weight:700">Otras opciones que también te habrían pagado</div>
+    <div class="alts">
+      <div class="card alt">
+        <div class="tag">Más plata</div>
+        <h4>Soya → girasol</h4>
+        <div class="m">+USD 405 <small>/ha/año</small></div>
+        <ul><li>76 días menos de suelo desnudo</li><li>Falló 1 de 45 inviernos; 1 regular por sequía</li></ul>
+        <div class="note"><svg class="icon"><use href="#i-alert"/></svg>Daño por aves y precio que cambia mucho.</div>
+      </div>
+      <div class="card alt">
+        <div class="tag">Lo conocido</div>
+        <h4>Soya → trigo</h4>
+        <div class="m">+USD 274 <small>/ha/año</small></div>
+        <ul><li>109 días menos de suelo desnudo</li><li>Nunca falló; 3 de 45 inviernos regulares por sequía</li></ul>
+        <div class="note"><svg class="icon"><use href="#i-alert"/></svg>Vigilar brusone y heladas tardías.</div>
+      </div>
+      <div class="card alt">
+        <div class="tag">Cuidar el suelo</div>
+        <h4>Soya → cobertura</h4>
+        <div class="m">−USD 60 <small>/ha/año</small></div>
+        <ul><li>159 días menos de suelo desnudo</li><li>Deja nitrógeno para la soya siguiente</li></ul>
+        <div class="note"><svg class="icon"><use href="#i-alert"/></svg>No se cosecha: es una inversión en el suelo, no un ingreso.</div>
+      </div>
+    </div>
+    <p style="margin-top:14px"><a class="linkish" href="#">Comparar las 6 opciones lado a lado</a></p>
+  </div>
+</section>
+
+<!-- ================= 5 · POR QUÉ ================= -->
+<section class="block" id="porque">
+  <div class="wrap">
+    <div class="scene">Escena 5 · demo 21–26 s</div>
+    <div class="eyebrow"><span class="num">4</span>¿Por qué sorgo?</div>
+    <h2>Lo que ve la NASA en tu campo, una cosa a la vez.</h2>
+    <div class="steps" aria-label="Prueba 1 de 4"><span class="on"></span><span></span><span></span><span></span></div>
+
+    <article class="card ev">
+      <div class="k">PRUEBA 1 DE 4</div>
+      <h3>Hoy tu campo pasa 9 meses desnudo. Con sorgo, solo 3.</h3>
+      <p class="sub">Suelo sin cobertura se lo lleva el viento del invierno y pierde materia orgánica.</p>
+      <div class="legend"><span><i class="today"></i>Cubierto, hoy</span><span><i class="opt"></i>Cubierto, con sorgo</span><span><i class="bare"></i>Desnudo (menos de 30 % cubierto)</span></div>
+      <div class="cal">
+        <div class="season-bar"><span></span><div><span>verano · soya</span><span>invierno</span></div><span></span></div>
+        <div class="cal-row cal-head"><span class="cal-l"></span><div class="cal-cells"><span>O</span><span>N</span><span>D</span><span>E</span><span>F</span><span>M</span><span>A</span><span>M</span><span>J</span><span>J</span><span>A</span><span>S</span></div><span class="cal-n"></span></div><div class="cal-row"><span class="cal-l">Hoy: soya → barbecho</span><div class="cal-cells"><span class="cal-c bare" title="octubre: 8 % cubierto"></span><span class="cal-c bare" title="noviembre: 28 % cubierto"></span><span class="cal-c cov today" title="diciembre: 80 % cubierto"></span><span class="cal-c cov today" title="enero: 94 % cubierto"></span><span class="cal-c cov today" title="febrero: 84 % cubierto"></span><span class="cal-c bare" title="marzo: 27 % cubierto"></span><span class="cal-c bare" title="abril: 16 % cubierto"></span><span class="cal-c bare" title="mayo: 9 % cubierto"></span><span class="cal-c bare" title="junio: 8 % cubierto"></span><span class="cal-c bare" title="julio: 8 % cubierto"></span><span class="cal-c bare" title="agosto: 8 % cubierto"></span><span class="cal-c bare" title="septiembre: 8 % cubierto"></span></div><span class="cal-n"><b>9</b> meses<br>desnudo</span></div><div class="cal-row"><span class="cal-l">Soya → sorgo</span><div class="cal-cells"><span class="cal-c bare" title="octubre: 10 % cubierto"></span><span class="cal-c bare" title="noviembre: 27 % cubierto"></span><span class="cal-c cov opt" title="diciembre: 79 % cubierto"></span><span class="cal-c cov opt" title="enero: 94 % cubierto"></span><span class="cal-c cov opt" title="febrero: 85 % cubierto"></span><span class="cal-c cov opt" title="marzo: 40 % cubierto"></span><span class="cal-c cov opt" title="abril: 70 % cubierto"></span><span class="cal-c cov opt" title="mayo: 83 % cubierto"></span><span class="cal-c cov opt" title="junio: 81 % cubierto"></span><span class="cal-c cov opt" title="julio: 63 % cubierto"></span><span class="cal-c cov opt" title="agosto: 42 % cubierto"></span><span class="cal-c bare" title="septiembre: 23 % cubierto"></span></div><span class="cal-n"><b>3</b> meses<br>desnudo</span></div>
+      </div>
+      <div class="foot"><span class="src"><svg class="icon"><use href="#i-sat"/></svg>Simulado con clima NASA POWER · promedio de 45 años</span><a class="linkish" href="#">Siguiente prueba</a></div>
+    </article>
+
+    <article class="card ev">
+      <div class="k">PRUEBA 2 DE 4</div>
+      <h3>En tu zona llueve lo suficiente en invierno para el sorgo.</h3>
+      <p class="sub">La mitad de los inviernos llovieron más de 366 mm entre la siembra y la cosecha. Y el sorgo aguanta la sequía.</p>
+      <div class="legend"><span><i class="water"></i>Lluvia de cada invierno (mm)</span><span><i style="background:var(--ink-2)"></i>2010-11, el más seco: 119 mm, y el sorgo igual rindió 9 de cada 10 kg</span></div>
+      <svg class="chart" viewBox="0 0 360 140" role="img" aria-label="Lluvia de cada invierno, de marzo a julio, 1981 a 2025, según NASA POWER"><line class="grid" x1="34" x2="360" y1="118.0" y2="118.0"/><text class="tick" x="30" y="121.0" text-anchor="end">0</text><line class="grid" x1="34" x2="360" y1="85.5" y2="85.5"/><text class="tick" x="30" y="88.5" text-anchor="end">250</text><line class="grid" x1="34" x2="360" y1="53.0" y2="53.0"/><text class="tick" x="30" y="56.0" text-anchor="end">500</text><line class="grid" x1="34" x2="360" y1="20.5" y2="20.5"/><text class="tick" x="30" y="23.5" text-anchor="end">750</text><path class="bar-water" d="M38.0 118 v-78.2 q0 -2 2 -2 h2 q2 0 2 2 v78.2 z"><title>1981-82: 617 mm</title></path><path class="bar-water" d="M45.4 118 v-89.7 q0 -2 2 -2 h2 q2 0 2 2 v89.7 z"><title>1982-83: 705 mm</title></path><path class="bar-water" d="M52.8 118 v-31.4 q0 -2 2 -2 h2 q2 0 2 2 v31.4 z"><title>1983-84: 257 mm</title></path><path class="bar-water" d="M60.2 118 v-39.9 q0 -2 2 -2 h2 q2 0 2 2 v39.9 z"><title>1984-85: 322 mm</title></path><path class="bar-water" d="M67.6 118 v-66.2 q0 -2 2 -2 h2 q2 0 2 2 v66.2 z"><title>1985-86: 525 mm</title></path><path class="bar-water" d="M75.0 118 v-75.6 q0 -2 2 -2 h2 q2 0 2 2 v75.6 z"><title>1986-87: 597 mm</title></path><path class="bar-water" d="M82.4 118 v-44.0 q0 -2 2 -2 h2 q2 0 2 2 v44.0 z"><title>1987-88: 354 mm</title></path><path class="bar-water" d="M89.80000000000001 118 v-54.2 q0 -2 2 -2 h2 q2 0 2 2 v54.2 z"><title>1988-89: 432 mm</title></path><path class="bar-water" d="M97.2 118 v-64.6 q0 -2 2 -2 h2 q2 0 2 2 v64.6 z"><title>1989-90: 512 mm</title></path><path class="bar-water" d="M104.60000000000001 118 v-66.5 q0 -2 2 -2 h2 q2 0 2 2 v66.5 z"><title>1990-91: 527 mm</title></path><path class="bar-water" d="M112.0 118 v-107.2 q0 -2 2 -2 h2 q2 0 2 2 v107.2 z"><title>1991-92: 840 mm</title></path><path class="bar-water" d="M119.4 118 v-30.5 q0 -2 2 -2 h2 q2 0 2 2 v30.5 z"><title>1992-93: 250 mm</title></path><path class="bar-water" d="M126.80000000000001 118 v-27.5 q0 -2 2 -2 h2 q2 0 2 2 v27.5 z"><title>1993-94: 227 mm</title></path><path class="bar-water" d="M134.2 118 v-34.1 q0 -2 2 -2 h2 q2 0 2 2 v34.1 z"><title>1994-95: 278 mm</title></path><path class="bar-water" d="M141.60000000000002 118 v-58.6 q0 -2 2 -2 h2 q2 0 2 2 v58.6 z"><title>1995-96: 466 mm</title></path><path class="bar-water" d="M149.0 118 v-40.1 q0 -2 2 -2 h2 q2 0 2 2 v40.1 z"><title>1996-97: 324 mm</title></path><path class="bar-water" d="M156.4 118 v-41.6 q0 -2 2 -2 h2 q2 0 2 2 v41.6 z"><title>1997-98: 335 mm</title></path><path class="bar-water" d="M163.8 118 v-45.3 q0 -2 2 -2 h2 q2 0 2 2 v45.3 z"><title>1998-99: 364 mm</title></path><path class="bar-water" d="M171.20000000000002 118 v-57.1 q0 -2 2 -2 h2 q2 0 2 2 v57.1 z"><title>1999-00: 455 mm</title></path><path class="bar-water" d="M178.6 118 v-73.3 q0 -2 2 -2 h2 q2 0 2 2 v73.3 z"><title>2000-01: 579 mm</title></path><path class="bar-water" d="M186.0 118 v-61.3 q0 -2 2 -2 h2 q2 0 2 2 v61.3 z"><title>2001-02: 487 mm</title></path><path class="bar-water" d="M193.4 118 v-48.8 q0 -2 2 -2 h2 q2 0 2 2 v48.8 z"><title>2002-03: 391 mm</title></path><path class="bar-water" d="M200.8 118 v-35.3 q0 -2 2 -2 h2 q2 0 2 2 v35.3 z"><title>2003-04: 287 mm</title></path><path class="bar-water" d="M208.20000000000002 118 v-34.4 q0 -2 2 -2 h2 q2 0 2 2 v34.4 z"><title>2004-05: 280 mm</title></path><path class="bar-water" d="M215.60000000000002 118 v-40.0 q0 -2 2 -2 h2 q2 0 2 2 v40.0 z"><title>2005-06: 323 mm</title></path><path class="bar-water" d="M223.0 118 v-34.4 q0 -2 2 -2 h2 q2 0 2 2 v34.4 z"><title>2006-07: 280 mm</title></path><path class="bar-water" d="M230.4 118 v-47.7 q0 -2 2 -2 h2 q2 0 2 2 v47.7 z"><title>2007-08: 382 mm</title></path><path class="bar-water" d="M237.8 118 v-45.8 q0 -2 2 -2 h2 q2 0 2 2 v45.8 z"><title>2008-09: 368 mm</title></path><path class="bar-water" d="M245.20000000000002 118 v-23.1 q0 -2 2 -2 h2 q2 0 2 2 v23.1 z"><title>2009-10: 193 mm</title></path><path class="bar-water hi" d="M252.60000000000002 118 v-13.5 q0 -2 2 -2 h2 q2 0 2 2 v13.5 z"><title>2010-11: 119 mm</title></path><path class="bar-water" d="M260.0 118 v-53.9 q0 -2 2 -2 h2 q2 0 2 2 v53.9 z"><title>2011-12: 430 mm</title></path><path class="bar-water" d="M267.4 118 v-75.6 q0 -2 2 -2 h2 q2 0 2 2 v75.6 z"><title>2012-13: 597 mm</title></path><path class="bar-water" d="M274.8 118 v-87.0 q0 -2 2 -2 h2 q2 0 2 2 v87.0 z"><title>2013-14: 685 mm</title></path><path class="bar-water" d="M282.20000000000005 118 v-37.3 q0 -2 2 -2 h2 q2 0 2 2 v37.3 z"><title>2014-15: 302 mm</title></path><path class="bar-water" d="M289.6 118 v-40.0 q0 -2 2 -2 h2 q2 0 2 2 v40.0 z"><title>2015-16: 323 mm</title></path><path class="bar-water" d="M304.40000000000003 118 v-24.9 q0 -2 2 -2 h2 q2 0 2 2 v24.9 z"><title>2017-18: 207 mm</title></path><path class="bar-water" d="M311.8 118 v-51.7 q0 -2 2 -2 h2 q2 0 2 2 v51.7 z"><title>2018-19: 413 mm</title></path><path class="bar-water" d="M319.2 118 v-40.4 q0 -2 2 -2 h2 q2 0 2 2 v40.4 z"><title>2019-20: 326 mm</title></path><path class="bar-water" d="M326.6 118 v-40.8 q0 -2 2 -2 h2 q2 0 2 2 v40.8 z"><title>2020-21: 329 mm</title></path><path class="bar-water" d="M334.0 118 v-28.4 q0 -2 2 -2 h2 q2 0 2 2 v28.4 z"><title>2021-22: 234 mm</title></path><path class="bar-water" d="M341.40000000000003 118 v-68.2 q0 -2 2 -2 h2 q2 0 2 2 v68.2 z"><title>2022-23: 540 mm</title></path><path class="bar-water" d="M348.8 118 v-43.4 q0 -2 2 -2 h2 q2 0 2 2 v43.4 z"><title>2023-24: 349 mm</title></path><path class="bar-water" d="M356.2 118 v-86.1 q0 -2 2 -2 h2 q2 0 2 2 v86.1 z"><title>2024-25: 678 mm</title></path><path class="bar-water" d="M363.6 118 v-70.3 q0 -2 2 -2 h2 q2 0 2 2 v70.3 z"><title>2025-26: 556 mm</title></path><line class="axis" x1="34" x2="360" y1="118" y2="118"/><text class="tick" x="38.0" y="138">1981</text><text class="tick" x="112.0" y="138">1991</text><text class="tick" x="186.0" y="138">2001</text><text class="tick" x="260.0" y="138">2011</text><text class="tick" x="334.0" y="138">2021</text></svg>
+      <div class="foot"><span class="src"><svg class="icon"><use href="#i-sat"/></svg>NASA POWER · lluvia diaria desde 1981</span><a class="linkish" href="#">Siguiente prueba</a></div>
+    </article>
+
+    <div class="sat-row" style="margin-top:16px">
+      <article class="card ev" style="margin-top:0">
+        <div class="k">PRUEBA 3 DE 4 · <span class="illus">Ejemplo ilustrativo</span></div>
+        <h3>El satélite confirma: tu lote queda pelado de mayo a octubre.</h3>
+        <p class="sub">Verdor medido por Landsat, a 30 m, en los últimos 5 años.</p>
+        <div class="ndvi-strip" aria-label="Verdor por mes">
+          <span class="n-mid" title="oct"></span><span class="n-mid" title="nov"></span><span class="n-hi"></span><span class="n-hi"></span><span class="n-hi"></span><span class="n-mid"></span><span class="n-lo"></span><span class="n-lo"></span><span class="n-lo"></span><span class="n-lo"></span><span class="n-lo"></span><span class="n-lo"></span>
+        </div>
+        <div class="gauge-labels"><span>oct</span><span>ene</span><span>abr</span><span>jul</span><span>sep</span></div>
+        <div class="foot"><span class="src"><svg class="icon"><use href="#i-sat"/></svg>NASA/USGS Landsat 8–9</span></div>
+      </article>
+      <article class="card ev" style="margin-top:0">
+        <div class="k">PRUEBA 4 DE 4 · <span class="illus">Ejemplo ilustrativo</span></div>
+        <h3>Esta semana tu suelo está más seco que lo normal.</h3>
+        <p class="sub">Si sigue así, conviene sembrar el sorgo apenas cosechas la soya, con la humedad que queda.</p>
+        <div class="gauge" role="img" aria-label="Humedad del suelo: 18 % por debajo de lo normal">
+          <div class="gauge-track"><div class="gauge-now"></div><div class="gauge-norm"></div></div>
+          <div class="gauge-labels"><span>Muy seco</span><span><b style="color:var(--ink)">Normal</b></span><span>Muy húmedo</span></div>
+        </div>
+        <p style="margin-top:10px;font-weight:700">18 % más seco que lo normal para noviembre</p>
+        <div class="foot"><span class="src"><svg class="icon"><use href="#i-sat"/></svg>NASA SMAP · humedad del suelo</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6 · ESTA CAMPAÑA ================= -->
+<section class="block" id="campana">
+  <div class="wrap wide">
+    <div class="scene">Escena 6 · demo 26–30 s</div>
+    <div class="eyebrow"><span class="num">5</span>Esta campaña</div>
+    <h2>Viene un El Niño muy fuerte. En tu campo, eso fue buena noticia.</h2>
+    <div class="season">
+      <div class="card">
+        <div class="enso-head"><span class="sun"><svg class="icon"><use href="#i-sun"/></svg></span><div><b style="font-size:19px">El Niño · muy fuerte</b><div class="muted" style="font-size:15px">El mar del Pacífico central está 2,5 °C más caliente que lo normal (agosto–octubre 2026)</div></div></div>
+        <div class="meter" role="img" aria-label="Intensidad: muy fuerte, 4 de 4">
+          <div class="meter-track"><span class="f"></span><span class="f"></span><span class="f"></span><span class="f"></span></div>
+          <div class="meter-l"><span>Débil</span><span>Moderado</span><span>Fuerte</span><span>Muy fuerte</span></div>
+        </div>
+        <ul class="plain" style="list-style:none;padding:0">
+          <li><svg class="icon"><use href="#i-check"/></svg><span>Hubo <b>15 años con El Niño</b> desde 1981. En ninguno la soya tuvo una mala campaña en tu campo.</span></li>
+          <li><svg class="icon"><use href="#i-check"/></svg><span>El sorgo de invierno <b>no falló ninguna vez</b> en esos años.</span></li>
+        </ul>
+        <p class="muted" style="margin-top:14px;font-size:15px">El Niño es una tendencia, no una promesa: cada año es distinto. Úsalo para planificar, no para apostar.</p>
+        <div style="margin-top:12px"><span class="src"><svg class="icon"><use href="#i-sat"/></svg>NOAA CPC (índice ONI +2,5) · NASA POWER</span></div>
+      </div>
+      <div class="card">
+        <div style="font-weight:700">Ganancia promedio por tipo de año <span class="muted" style="font-weight:400">· USD/ha al año</span></div>
+        <div class="legend"><span><i class="today"></i>Hoy: soya → barbecho</span><span><i class="opt"></i>Soya → sorgo</span></div>
+        <div class="hbars"><div class="hb-group now"><div class="hb-label">Con El Niño <span class="muted">· 15 años</span> <span class="tag-now">este año</span></div><div class="hb"><span class="hb-k">Hoy</span><span class="hb-track"><span class="hb-fill today" style="width:62.3%"></span></span><b>685</b></div><div class="hb"><span class="hb-k">Sorgo</span><span class="hb-track"><span class="hb-fill opt" style="width:91.4%"></span></span><b>1.005</b></div></div><div class="hb-group"><div class="hb-label">Años normales <span class="muted">· 13 años</span></div><div class="hb"><span class="hb-k">Hoy</span><span class="hb-track"><span class="hb-fill today" style="width:57.4%"></span></span><b>631</b></div><div class="hb"><span class="hb-k">Sorgo</span><span class="hb-track"><span class="hb-fill opt" style="width:86.3%"></span></span><b>949</b></div></div><div class="hb-group"><div class="hb-label">Con La Niña <span class="muted">· 17 años</span></div><div class="hb"><span class="hb-k">Hoy</span><span class="hb-track"><span class="hb-fill today" style="width:55.6%"></span></span><b>612</b></div><div class="hb"><span class="hb-k">Sorgo</span><span class="hb-track"><span class="hb-fill opt" style="width:85.7%"></span></span><b>943</b></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 7 · AJUSTAR ================= -->
+<section class="block" id="ajustar">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">6</span>Ajustar a tu realidad <span style="font-weight:400;text-transform:none;letter-spacing:0">· opcional</span></div>
+    <h2>¿Tu caso es distinto? Cámbialo aquí.</h2>
+    <p class="lead">La recomendación se actualiza sola.</p>
+
+    <details class="adj" open>
+      <summary><span>¿Qué es lo más importante para ti?<small>Ahora: equilibrio entre plata, riesgo y suelo</small></span><svg class="icon chev"><use href="#i-chev"/></svg></summary>
+      <div class="adj-body">
+        <div class="profiles">
+          <div class="profile"><b><svg class="icon"><use href="#i-coin"/></svg>Ganar más</b><span>La opción que más plata deja en promedio.</span><div class="res">Recomendaría: soya → girasol</div></div>
+          <div class="profile"><b><svg class="icon"><use href="#i-shield"/></svg>Menos riesgo</b><span>Menos inviernos malos, aunque gane un poco menos.</span><div class="res">Recomendaría: soya → sorgo</div></div>
+          <div class="profile"><b><svg class="icon"><use href="#i-soil"/></svg>Cuidar el suelo</b><span>Menos suelo desnudo, más rastrojo y nitrógeno.</span><div class="res">Recomendaría: soya → sorgo</div></div>
+        </div>
+        <p class="muted" style="font-size:14px;margin-top:10px">Sin elegir nada, buscamos un equilibrio entre plata, riesgo y suelo: hoy eso es soya → sorgo.</p>
+      </div>
+    </details>
+
+    <details class="adj">
+      <summary><span>Cultivos que no puedo sembrar o vender<small>Ninguno marcado</small></span><svg class="icon chev"><use href="#i-chev"/></svg></summary>
+      <div class="adj-body"><div class="chips"><span class="chip">Trigo</span><span class="chip">Sorgo</span><span class="chip off">Girasol</span><span class="chip">Maíz</span><span class="chip">Cobertura</span></div></div>
+    </details>
+
+    <details class="adj" open>
+      <summary><span>Mis precios<small>Usamos precios de referencia de Santa Cruz</small></span><svg class="icon chev"><use href="#i-chev"/></svg></summary>
+      <div class="adj-body">
+        <div class="prices">
+          <div class="price"><label>Soya</label><div class="in">0,38 <small>USD/kg</small></div></div>
+          <div class="price"><label>Sorgo</label><div class="in">0,15 <small>USD/kg</small></div></div>
+          <div class="price"><label>Girasol</label><div class="in">0,40 <small>USD/kg</small></div></div>
+          <div class="price"><label>Trigo</label><div class="in">0,26 <small>USD/kg</small></div></div>
+        </div>
+      </div>
+    </details>
+
+    <details class="adj">
+      <summary><span>¿Y si el clima cambia?<small>Prueba con menos lluvia o más calor</small></span><svg class="icon chev"><use href="#i-chev"/></svg></summary>
+      <div class="adj-body">
+        <div style="font-weight:600;margin-bottom:8px">Lluvia</div>
+        <div class="seg"><span>−20 %</span><span>−10 %</span><span class="on">Como siempre</span><span>+10 %</span></div>
+        <div style="font-weight:600;margin:14px 0 8px">Temperatura</div>
+        <div class="seg"><span class="on">Como siempre</span><span>+1 °C</span><span>+2 °C</span></div>
+      </div>
+    </details>
+
+    <div class="card honest" style="margin-top:28px">
+      <b>Lo que no sabemos (y tu técnico sí)</b>
+      <ul>
+        <li>Los precios y costos son de referencia: cámbialos por los tuyos.</li>
+        <li>El nitrógeno, las plagas y la materia orgánica se estiman con reglas agronómicas, no con mediciones de tu campo.</li>
+        <li>No modelamos enfermedades específicas, malezas resistentes ni anegamiento.</li>
+        <li>El clima viene de una celda de unos 50 km: tu lote puede ser más seco o más húmedo.</li>
+      </ul>
+      <div class="sources"><span>NASA POWER</span><span>NASA SRTM</span><span>Landsat 8–9</span><span>NASA SMAP</span><span>GPM IMERG</span><span>NOAA CPC (ONI)</span><span>ISRIC SoilGrids</span><span>FAO-56 / FAO-33</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ESTADOS (referencia para el equipo) ================= -->
+<section class="block">
+  <div class="wrap wide">
+    <div class="eyebrow">Referencia de estados</div>
+    <h2 style="font-size:24px">Carga, satélite no disponible y error</h2>
+    <div class="states">
+      <div class="card state">
+        <h4>Calculando (primera vez ~13 s)</h4>
+        <p>Estamos repasando 45 años de clima en tu campo…</p>
+        <ul class="prog">
+          <li><svg class="icon ok"><use href="#i-check"/></svg>Clima diario 1981–2026 (NASA POWER)</li>
+          <li><span class="run"></span>Tipo de suelo de tu lote (SoilGrids)</li>
+          <li class="muted"><svg class="icon" style="opacity:.4"><use href="#i-sprout"/></svg>Simulando 6 rotaciones, 45 campañas</li>
+        </ul>
+      </div>
+      <div class="card state">
+        <h4>Satélite no disponible</h4>
+        <p>Hoy no pudimos consultar los satélites (Landsat, SMAP). La recomendación no cambia: se basa en 45 años de clima de la NASA.</p>
+        <div class="skel" style="width:80%"></div><div class="skel" style="width:60%"></div>
+        <p style="margin-top:10px"><a class="linkish" href="#">Intentar de nuevo</a></p>
+      </div>
+      <div class="card state">
+        <h4>Error</h4>
+        <p>No pudimos conectarnos con NASA POWER. Tu campo quedó guardado: vuelve a intentar en un minuto.</p>
+        <p style="margin-top:10px"><a class="btn btn-ghost" href="#">Intentar de nuevo</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap wide">[NOMBRE] es una guía basada en datos. Confírmala con tu técnico y tu experiencia en el campo. · NASA Space Apps 2026 · Field Shift · Santa Cruz, Bolivia (−17,40, −63,20)</div>
+</footer>
+</body>
+</html>
