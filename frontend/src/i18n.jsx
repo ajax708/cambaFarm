@@ -2,7 +2,7 @@
 export const T = {
   es: {
     locale: 'es-BO',
-    brand: '[Nombre]',
+    brand: 'CambaFarm',
     heroTitle: 'Tu campo puede ganar plata en invierno',
     heroLead: 'Después de la soya, la tierra queda desnuda casi todo el año. Te mostramos qué habría pasado si sembrabas algo en invierno — en tu propio campo, en los últimos 45 años.',
     start: 'Ver mi campo',
@@ -68,7 +68,7 @@ export const T = {
   },
   en: {
     locale: 'en-US',
-    brand: '[Name]',
+    brand: 'CambaFarm',
     heroTitle: 'Your field can earn money in winter',
     heroLead: 'After soy, the land sits bare most of the year. We show you what would have happened if you had planted something in winter — on your own field, over the last 45 years.',
     start: 'See my field',
