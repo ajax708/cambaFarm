@@ -90,6 +90,7 @@ def simulate_ep(body: SimIn):
     lapse = -0.0065 * (field_elev - cell_elev) if field_elev is not None else 0.0
 
     texture, soil_src = body.soil_texture, "input"
+    sg = None
     if not texture:
         sg = sources.get_soil(lat, lon)
         if sg:
@@ -132,9 +133,42 @@ def simulate_ep(body: SimIn):
         "outlook": outlook,
         "explain": explain(strats, body.current, outlook, None, lang),
         "warnings": warnings,
+        "data": data_evidence(days, raw, lat, lon, cell_elev, field_elev, slope, sg, texture, soil_src, oni, warnings),
         "sources": ["NASA POWER (daily, AG community)", "NASA SRTM (OpenTopoData / Earth Engine)",
                     "NOAA CPC ONI", "ISRIC SoilGrids 2.0", "FAO-56 / FAO-33 crop coefficients"],
         "compute_ms": round((time.time() - t0) * 1000),
+    }
+
+
+def data_evidence(days, raw, lat, lon, cell_elev, field_elev, slope, sg, texture, soil_src, oni, warnings):
+    """The raw inputs behind the answer, summarised so the UI can show (and prove) them."""
+    years = {}
+    for d in days:
+        y = years.setdefault(d["date"][:4], {"n": 0, "rain": 0.0, "tmax": 0.0, "tmin": 0.0, "srad": 0.0, "ns": 0})
+        y["n"] += 1
+        y["rain"] += d["rain"] or 0
+        y["tmax"] += d["tmax"] or 0
+        y["tmin"] += d["tmin"] or 0
+        if (d.get("srad") or -999) > -900:
+            y["srad"] += d["srad"]
+            y["ns"] += 1
+    annual = [{"year": int(k), "days": v["n"], "rain_mm": round(v["rain"]), "tmax_c": round(v["tmax"] / v["n"], 1),
+               "tmin_c": round(v["tmin"] / v["n"], 1), "srad": round(v["srad"] / v["ns"], 1) if v["ns"] else None, "complete": v["n"] >= 365}
+              for k, v in sorted(years.items())]
+    params = list(raw.get("properties", {}).get("parameter", {}).keys())
+    return {
+        "power": {
+            "dataset": "NASA POWER Daily (AG community)", "url": "https://power.larc.nasa.gov/api/temporal/daily/point",
+            "query": {"latitude": round(lat, 4), "longitude": round(lon, 4), "start": days[0]["date"], "end": days[-1]["date"]},
+            "parameters": params, "n_days": len(days), "cell_elevation_m": cell_elev,
+            "annual": annual, "last_days": days[-14:],
+        },
+        "soil": {"dataset": "ISRIC SoilGrids 2.0 (0-30 cm)", "url": "https://rest.isric.org/soilgrids/v2.0/properties/query",
+                 "values": {k: round(v, 1) for k, v in (sg or {}).items()}, "texture": texture, "source": soil_src},
+        "terrain": {"dataset": "NASA SRTM 30 m (OpenTopoData / Earth Engine)", "elevation_m": field_elev, "slope_pct": slope,
+                    "slope_source": "default" if "slope_default" in warnings else "srtm"},
+        "enso": {"dataset": "NOAA CPC Oceanic Nino Index (ONI)", "url": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+                 "recent": oni[-24:]},
     }
 
 
