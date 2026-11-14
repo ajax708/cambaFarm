@@ -1,10 +1,10 @@
 // Turns the engine's response into the few plain facts the farmer sees.
 
+// Ranking weights per priority profile (see backend Weights).
 export const PROFILES = {
-  balanced: { income: 0.3, stability: 0.25, soil: 0.25, water: 0.1, pests: 0.1 },
-  money: { income: 0.7, stability: 0.1, soil: 0.1, water: 0.05, pests: 0.05 },
-  risk: { income: 0.15, stability: 0.45, soil: 0.1, water: 0.25, pests: 0.05 },
-  soil: { income: 0.15, stability: 0.1, soil: 0.6, water: 0.05, pests: 0.1 },
+  balanced: { success: 0.45, summer: 0.2, soil: 0.25, pests: 0.1 },
+  risk: { success: 0.65, summer: 0.3, soil: 0.05, pests: 0 },
+  soil: { success: 0.3, summer: 0.1, soil: 0.6, pests: 0 },
 }
 
 // Winter options the farmer can say they do today (all after soy).
@@ -23,55 +23,57 @@ export function winterCrop(s) {
 }
 export const isTwoYear = (s) => Array.isArray(s.cycle[0]) && s.cycle.length > 1
 
-function status(w) {
-  if (!w || w.class === 'fallow') return 'rest'
-  if (w.class === 'good' || w.class === 'fair') return 'ok'
-  if (w.class === 'not_sown') return 'miss'
-  return 'bad'
-}
-
-/** Campaign-by-campaign winters, compared to the current strategy. */
-export function winters(s, current) {
-  const cur = current.phases[0].campaigns
-  return s.phases[0].campaigns.map((c, i) => ({
+/** Campaign-by-campaign winters (45 of them), with the success-rule outcome. */
+export function winters(s) {
+  return s.phases[0].campaigns.map((c) => ({
     year: c.campaign + 1,
     crop: c.winter?.crop,
-    status: status(c.winter),
+    outcome: c.winter_outcome || 'rest', // ok | no_sow | late_sow | water | frost | heat | late | rest
+    summer: c.summer_outcome,
     rain: c.winter?.rain_mm,
+    ratio: c.winter?.water_ratio,
     enso: c.enso,
-    gain: c.margin - (cur[i]?.margin ?? c.margin),
   }))
 }
 
+const count = (xs, f) => xs.filter(f).length
+
 export function summary(s, current, phase) {
-  const ws = winters(s, current)
-  const planted = ws.filter((w) => w.status !== 'rest')
-  const same = ws.filter((w) => w.enso === phase)
-  const samePlanted = same.filter((w) => w.status !== 'rest')
+  const ws = winters(s)
+  const planted = ws.filter((w) => w.outcome !== 'rest')
+  const fails = planted.filter((w) => w.outcome !== 'ok')
+  const causes = {}
+  fails.forEach((w) => { causes[w.outcome] = (causes[w.outcome] || 0) + 1 })
+  const same = planted.filter((w) => w.enso === phase)
+  const curWs = winters(current)
   return {
     ws,
     n: planted.length,
-    ok: planted.filter((w) => w.status === 'ok').length,
-    worse: s.id === current.id ? 0 : ws.filter((w) => w.gain < -1).length,
-    gainYear: s.indicators.margin.value - current.indicators.margin.value,
-    gainTotal: ws.reduce((a, w) => a + w.gain, 0),
+    ok: count(planted, (w) => w.outcome === 'ok'),
+    sown: count(planted, (w) => w.outcome !== 'no_sow' && w.outcome !== 'late_sow'),
+    share: planted.length ? count(planted, (w) => w.outcome === 'ok') / planted.length : 0,
+    mainCause: Object.keys(causes).sort((a, b) => causes[b] - causes[a])[0] || null,
+    causes,
+    summerOk: count(ws, (w) => w.summer === 'ok'),
+    curSummerOk: count(curWs, (w) => w.summer === 'ok'),
     bareMonths: Math.round(s.indicators.bare_days.value / 30.4),
     curBareMonths: Math.round(current.indicators.bare_days.value / 30.4),
     ensoN: same.length,
-    ensoFails: samePlanted.filter((w) => w.status !== 'ok').length,
+    ensoOk: count(same, (w) => w.outcome === 'ok'),
   }
 }
+
+/** "8 of every 10" style rounding. */
+export const outOfTen = (share) => Math.round(share * 10)
 
 /** Short "personality" tag per option, among the options that are not today's. */
 export function tags(strats, currentId) {
   const pool = strats.filter((s) => !s.excluded?.length && s.id !== currentId)
   const out = {}
   const pick = (key, best) => { if (best && !out[best.id]) out[best.id] = key }
+  const succ = (s) => s.indicators.winter_success.value || 0
   pick('best', pool.find((s) => s.rank === Math.min(...pool.map((p) => p.rank))))
-  pick('money', [...pool].sort((a, b) => b.indicators.margin.value - a.indicators.margin.value)[0])
-  pick('safe', [...pool].sort((a, b) => a.indicators.loss_share.value - b.indicators.loss_share.value
-    || a.indicators.bad_summer_share.value - b.indicators.bad_summer_share.value
-    || b.indicators.margin_p10.value - a.indicators.margin_p10.value)[0])
+  pick('safe', [...pool].sort((a, b) => succ(b) - succ(a))[0])
   pick('soil', [...pool].sort((a, b) => a.indicators.bare_days.value - b.indicators.bare_days.value)[0])
   out[currentId] = 'today'
   return out
@@ -94,4 +96,10 @@ export function areaHa(poly) {
 export function median(xs) {
   const v = xs.filter((x) => x != null).sort((a, b) => a - b)
   return v.length ? v[Math.floor(v.length / 2)] : null
+}
+
+/** Optional money estimate from the farmer's own numbers. A failed winter counts as no harvest. */
+export function expectedMoney(sum, yieldKg, price, cost) {
+  if (!(yieldKg > 0 && price > 0 && cost >= 0) || !sum.n) return null
+  return (sum.ok / sum.n) * yieldKg * price - (sum.sown / sum.n) * cost
 }

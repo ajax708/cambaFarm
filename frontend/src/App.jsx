@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { MapContainer, TileLayer, CircleMarker, Polygon, Polyline, useMap, useMapEvents } from 'react-leaflet'
 import { T } from './i18n.jsx'
-import { PROFILES, TODAY_OPTIONS, winterCrop, isTwoYear, summary, tags, areaHa, median } from './logic.js'
+import { PROFILES, TODAY_OPTIONS, winterCrop, isTwoYear, summary, tags, areaHa, median, outOfTen, expectedMoney } from './logic.js'
 import DataPage from './DataPage.jsx'
 
 const API = import.meta.env.DEV ? '/api' : ''
@@ -54,6 +54,7 @@ export default function App() {
   const [busy, setBusy] = useState(false)
   const [tick, setTick] = useState(0)
   const [sel, setSel] = useState(null)
+  const [money, setMoney] = useState({ y: '', p: '', c: '' })
 
   const polygon = poly.length >= 3 ? poly.map((p) => [p.lat, p.lon]) : null
   const center = polygon ? { lat: poly.reduce((a, p) => a + p.lat, 0) / poly.length, lon: poly.reduce((a, p) => a + p.lon, 0) / poly.length } : point
@@ -233,9 +234,13 @@ export default function App() {
   const { chosen, cur, sum, phase, oni } = vm
   const crop = winterCrop(chosen)
   const headline = isTwoYear(chosen) ? chosen.name : t.plant[crop]
-  const more = sum.gainYear >= 0
-  const statuses = ['ok', 'bad', 'miss', 'rest'].filter((k) => sum.ws.some((w) => w.status === k))
-  const rains = sum.ws.filter((w) => w.status === 'ok' || w.status === 'bad').map((w) => w.rain).filter((r) => r > 0)
+  const curSum = summary(cur, cur, phase)
+  const extra = sum.ok - curSum.ok
+  const k10 = outOfTen(sum.share)
+  const sumOf = (s) => summary(s, cur, phase)
+  const outcomes = ['ok', 'water', 'frost', 'heat', 'no_sow', 'late_sow', 'late', 'rest'].filter((k) => sum.ws.some((w) => w.outcome === k))
+  const icon = { ok: 'sprout', water: 'drop', frost: 'snow', heat: 'sun', no_sow: 'cross', late_sow: 'cross', late: 'cross', rest: 'dot' }
+  const rains = sum.ws.filter((w) => !['rest', 'no_sow', 'late_sow'].includes(w.outcome)).map((w) => w.rain).filter((r) => r > 0)
   const sd = sat && sat !== 'loading' ? sat.data || {} : null
   const years = {}
   ;(sd?.imerg || []).forEach((m) => { const y = m.month.slice(0, 4); (years[y] ||= []).push(m.rain_mm) })
@@ -244,6 +249,7 @@ export default function App() {
   const bareSat = sd?.bare_month_share ? sd.bare_month_share.filter((x) => x != null && x >= 0.5).length : null
   const anom = sd?.smap_anomaly
   const satMsg = sat === 'loading' ? t.satPending : t.satOff
+  const usd = expectedMoney(sum, +money.y, +money.p, +money.c)
 
   return page(`result ${busy ? 'fading' : ''}`, <>
     <section className="verdict-head">
@@ -268,40 +274,54 @@ export default function App() {
 
     <div className="result-grid">
       <div className="col">
-        <div className={`money ${more ? '' : 'less'}`}>
-          <div className="big">{more ? '+' : '−'} USD {fmt(Math.abs(sum.gainYear))}</div>
-          <p className="m-sub">{t.perHa} · {t.vsToday}</p>
-          {ha && <p className="m-lot">{(more ? t.onYourLot : t.onYourLotLess)(fmt(ha), fmt(Math.round(Math.abs(sum.gainYear) * ha / 100) * 100))}</p>}
+        <div className={`money ${k10 >= 5 ? '' : 'less'}`}>
+          <div className="big">{t.successBig(sum.ok, sum.n)}</div>
+          <p className="m-sub">{t.successSub}</p>
+          <div className="dots10" aria-hidden="true">{Array.from({ length: 10 }, (_, i) => <i key={i} className={i < k10 ? 'on' : ''} />)}</div>
+          <p className="m-lot">{t.successDetail(k10)} · <button className="link light" onClick={() => setScreen('data')}>{t.whatCounts}</button></p>
         </div>
         <div className="facts">
-          {sum.n > 0 && (
-            <div className="fact"><span className="ic" style={{ background: 'var(--leaf-l)' }}><Icon id="sprout" size={24} /></span>
-              <div><b>{t.workedTitle(sum.ok, sum.n)}</b>{sum.worse === 0 ? t.neverWorse : t.sometimesWorse(sum.worse)}</div></div>
-          )}
+          <div className="fact"><span className="ic" style={{ background: 'var(--leaf-l)' }}><Icon id="sprout" size={24} /></span>
+            <div><b>{t.sownTitle(sum.sown, sum.n)}</b>{sum.mainCause ? t.causeText[sum.mainCause] : t.noFails}</div></div>
           <div className="fact"><span className="ic" style={{ background: 'var(--soil-l)' }}><Icon id="barbecho" size={26} /></span>
             <div><b>{sum.bareMonths <= sum.curBareMonths ? t.soilTitle : t.soilTitleWorse}</b>{t.soilText(sum.bareMonths, sum.curBareMonths)}</div></div>
           {sum.ensoN > 0 && (
             <div className="fact"><span className="ic" style={{ background: 'var(--sun-l)' }}><Icon id="sun" size={24} /></span>
-              <div><b>{Math.abs(oni) >= 1.5 && t.ensoStrong[phase] ? t.ensoStrong[phase] : t.ensoTitle[phase]}</b>{t.ensoText(sum.ensoFails, sum.ensoN)}</div></div>
+              <div><b>{Math.abs(oni) >= 1.5 && t.ensoStrong[phase] ? t.ensoStrong[phase] : t.ensoTitle[phase]}</b>{t.ensoText2(sum.ensoOk, sum.ensoN)}</div></div>
           )}
+          <div className="fact"><span className="ic" style={{ background: 'var(--leaf-l)' }}><Icon id="soya" size={28} /></span>
+            <div><b>{t.summerTitle}</b>{sum.summerOk === sum.curSummerOk ? t.summerSame(sum.summerOk, sum.ws.length)
+              : sum.summerOk < sum.curSummerOk ? t.summerWorse(sum.summerOk, sum.curSummerOk) : t.summerBetter(sum.summerOk, sum.curSummerOk)}</div></div>
         </div>
         {chosen.card?.risks?.length > 0 && <p className="risk"><b>{t.risksTitle}</b> {chosen.card.risks[0].replace(/^[^:]+:\s*/, '')}</p>}
+        <details className="panel money-calc">
+          <summary><b>{t.moneyTitle}</b></summary>
+          <p className="small">{t.moneyLead(t.crops[crop].toLowerCase())}</p>
+          <div className="calc-row">
+            <label>{t.yieldL}<input type="number" min="0" inputMode="decimal" value={money.y} onChange={(e) => setMoney({ ...money, y: e.target.value })} /></label>
+            <label>{t.priceL}<input type="number" min="0" step="0.01" inputMode="decimal" value={money.p} onChange={(e) => setMoney({ ...money, p: e.target.value })} /></label>
+            <label>{t.costL}<input type="number" min="0" inputMode="decimal" value={money.c} onChange={(e) => setMoney({ ...money, c: e.target.value })} /></label>
+          </div>
+          {usd != null && <p className="calc-out"><b>{t.moneyResult(fmt(usd))}</b>{ha ? <> · {t.moneyLot(fmt(ha), fmt(Math.round(usd * ha / 100) * 100))}</> : null}</p>}
+          <p className="small">{t.moneyHow}</p>
+        </details>
       </div>
 
       <div className="col">
         <h2 className="section-h">{t.optionsShort}</h2>
         {[...vm.pool, cur].map((s) => {
           const c = winterCrop(s)
-          const g = s.indicators.margin.value - cur.indicators.margin.value
-          const tag = vm.tags[s.id]
           const isCur = s.id === cur.id
+          const tag = vm.tags[s.id]
+          const ss = sumOf(s)
           return (
             <button key={s.id} className={`opt ${s.id === chosen.id ? 'best' : ''} ${isCur ? 'cur' : ''}`} onClick={() => { if (!isCur) setSel(s.id) }}>
               <span className={`pic bg-${c}`}><Icon id={c} size={40} /></span>
               <span className="opt-main"><span className="name">{isTwoYear(s) ? s.name : t.crops[c]}</span>
                 {tag && <span className={`chip-s t-${tag}`}>{t.tags[tag]}</span>}</span>
-              <span className={`val ${isCur ? '' : g >= 0 ? 'up' : 'down'}`}>
-                {isCur ? '0' : `${g >= 0 ? '+' : '−'}${fmt(Math.abs(g))}`}<small>{isCur ? t.startPoint : t.perYear}</small></span>
+              <span className="val">
+                {!ss || !ss.n ? '—' : <>{ss.ok}<span className="of10">/{ss.n}</span></>}
+                <small>{!ss || !ss.n ? t.noHarvest : t.optValSub}</small></span>
             </button>
           )
         })}
@@ -311,19 +331,17 @@ export default function App() {
 
     <section className="panel">
       <div className="h-row"><h2 className="section-h">{t.wintersShort}</h2>
-        <div className="legend">{statuses.map((k) => <span key={k}><i className={`w-${k}`} />{t.legend[k]}</span>)}</div></div>
+        <div className="legend">{outcomes.map((k) => <span key={k}><i className={`w-${k}`} />{t.legend[k]}</span>)}</div></div>
       <p className="lead">{t.wintersLead}</p>
       <div className="winters">
         {sum.ws.map((w) => (
-          <span key={w.year} className={`w-${w.status}`} title={`${t.winterOf(w.year)}: ${t.legend[w.status]}`}>
-            <Icon id={w.status === 'ok' ? 'sprout' : w.status === 'rest' ? 'dot' : 'cross'} />
+          <span key={w.year} className={`w-${w.outcome}`} title={`${t.winterOf(w.year)}: ${t.legend[w.outcome]}`}>
+            <Icon id={icon[w.outcome]} />
             <em>{String(w.year).slice(2)}</em>
           </span>
         ))}
       </div>
-      {chosen.id !== cur.id && (
-        <div className="total">{t.totalMore} <b>{t.totalPerHa(fmt(Math.abs(sum.gainTotal)), sum.gainTotal >= 0)}</b> {t.totalVs}</div>
-      )}
+      {chosen.id !== cur.id && extra > 0 && <div className="total">{t.totalHarvests(extra)}</div>}
     </section>
 
     <section>

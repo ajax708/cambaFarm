@@ -12,6 +12,52 @@ from .crops import CROPS, GAPS, SOILS, STRATEGIES, TRAIT_TEXT
 from .engine import simulate
 from .sources import enso_phase, oni_for_summer
 
+# ---- success rule: transparent, checkable thresholds -------------------------------
+# A season counts as a success when the crop could be sown, had enough water and was not
+# hit by frost or heat at flowering. Water need = FAO-56 crop evapotranspiration (Kc x ET0).
+WATER_OK = 0.8        # (rain during the cycle + stored soil water at sowing) / crop water need
+HEAT_DAYS_MAX = 2     # 3 or more days above the crop's heat limit during flowering = failure
+RULES = {"water_ok": WATER_OK, "heat_days_max": HEAT_DAYS_MAX}
+
+
+def outcome(r: dict | None) -> str | None:
+    """'ok' or the main failure cause: no_sow | late_sow | water | frost | heat | late. None = no crop (fallow)."""
+    if not r or r.get("crop") == "barbecho":
+        return None
+    if r.get("class") == "not_sown":
+        return "late_sow" if r.get("note") == "previous_crop_late" else "no_sow"
+    if (r.get("water_ratio") or 0) < WATER_OK:
+        return "water"
+    if r.get("frost_events", 0) > 0:
+        return "frost"
+    if r.get("heat_days", 0) > HEAT_DAYS_MAX:
+        return "heat"
+    if r.get("forced") and CROPS[r["crop"]]["potential"] > 0:
+        return "late"
+    return "ok"
+
+
+def season_kpi(camps: list[dict], key: str) -> dict:
+    """Success counts for one season (summer or winter) over all campaigns."""
+    res = [(c, outcome(c[key])) for c in camps]
+    res = [(c, o) for c, o in res if o is not None]
+    n = len(res)
+    causes = {}
+    for _, o in res:
+        if o != "ok":
+            causes[o] = causes.get(o, 0) + 1
+    by_enso = {}
+    for ph in ("el_nino", "la_nina", "neutral"):
+        sub = [o for c, o in res if c["enso"] == ph]
+        if sub:
+            by_enso[ph] = {"n": len(sub), "ok": sum(1 for o in sub if o == "ok")}
+    ratios = sorted(c[key]["water_ratio"] for c, _ in res if c[key].get("water_ratio") is not None)
+    return {"n": n, "ok": sum(1 for _, o in res if o == "ok"), "sown": sum(1 for _, o in res if o not in ("no_sow", "late_sow")),
+            "share": round(sum(1 for _, o in res if o == "ok") / n, 3) if n else None,
+            "causes": causes, "main_cause": max(causes, key=causes.get) if causes else None,
+            "by_enso": by_enso, "water_ratio_median": ratios[len(ratios) // 2] if ratios else None}
+
+
 PEST_PAIR = {("legume", "legume"): 1.0, ("grass", "grass"): 0.5, ("composite", "composite"): 1.0}
 
 
@@ -69,6 +115,8 @@ def run_strategy(clim, sid: str, texture: str, slope_pct: float, prices: dict, o
             om.append(crop["residue_t"] * (r["rel"] if crop["potential"] else (1 if r["class"] != "not_sown" else 0)))
             nbal.append(crop["n_balance"] if r["class"] != "not_sown" else 0)
         c["enso"] = enso_phase(oni_for_summer(oni, c["campaign"]))
+        c["winter_outcome"] = outcome(c["winter"])
+        c["summer_outcome"] = outcome(c["summer"])
 
     n = len(camps)
     phase_runs = []
@@ -103,10 +151,14 @@ def run_strategy(clim, sid: str, texture: str, slope_pct: float, prices: dict, o
         "pest_risk": {"value": pest_index(cycle), "unit": "índice", "basis": "rule"},
         "crops_per_year": {"value": round(len(crop_seasons) / n, 2), "unit": "cosechas/año", "basis": "data"},
     }
+    winter, summer_k = season_kpi(camps, "winter"), season_kpi(camps, "summer")
+    ind["winter_success"] = {"value": winter["share"], "unit": "share", "basis": "data+rule"}
+    ind["summer_success"] = {"value": summer_k["share"], "unit": "share", "basis": "data+rule"}
     crops_in = sorted({c for pair in cycle for c in pair})
     return {
         "id": sid, "cycle": cycle, "crops": crops_in, "n_campaigns": n,
         "indicators": ind, "by_enso": by_enso, "phases": phase_runs,
+        "kpi": {"winter": winter, "summer": summer_k},
         "cover_by_month": [round(mean(x for x in col if x is not None), 3)
                            for col in zip(*[r["cover_by_month"] for r in runs])],
         "soil_water_monthly": runs[0]["soil_water_monthly"],
@@ -119,15 +171,15 @@ def score(strats: list[dict], weights: dict, excluded: set[str]) -> None:
         return [(1 - (v - lo) / (hi - lo) if invert else (v - lo) / (hi - lo)) if hi > lo else 1.0 for v in vals]
 
     g = lambda k: [s["indicators"][k]["value"] for s in strats]
-    income = norm(g("margin"))
-    stab = [0.5 * a + 0.5 * b for a, b in zip(norm(g("loss_share"), True), norm(g("margin_p10")))]
+    # winter success is an absolute share (a fallow winter = no harvest = 0), not min-max scaled
+    success = [s["indicators"]["winter_success"]["value"] or 0.0 for s in strats]
+    summer = [s["indicators"]["summer_success"]["value"] or 0.0 for s in strats]
     soil = [0.4 * a + 0.3 * b + 0.3 * c for a, b, c in
-            zip(norm(g("erosion"), True), norm(g("organic_matter")), norm(g("n_balance")))]
-    water = norm(g("drought_share"), True)
+            zip(norm(g("bare_days"), True), norm(g("erosion"), True), norm(g("organic_matter")))]
     pest = norm(g("pest_risk"), True)
     tot = sum(weights.values()) or 1
     for i, s in enumerate(strats):
-        sub = {"income": income[i], "stability": stab[i], "soil": soil[i], "water": water[i], "pests": pest[i]}
+        sub = {"success": success[i], "summer": summer[i], "soil": soil[i], "pests": pest[i]}
         s["subscores"] = {k: round(v * 100) for k, v in sub.items()}
         s["score"] = round(100 * sum(weights.get(k, 0) * v for k, v in sub.items()) / tot)
         s["excluded"] = [c for c in s["crops"] if c in excluded]

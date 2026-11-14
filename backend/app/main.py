@@ -19,7 +19,7 @@ from fastapi.staticfiles import StaticFiles  # noqa: E402
 from pydantic import BaseModel, Field  # noqa: E402
 
 from . import gee, sources  # noqa: E402
-from .analysis import card, explain, run_strategy, score  # noqa: E402
+from .analysis import RULES, card, explain, run_strategy, score  # noqa: E402
 from .crops import CROPS, DEFAULT_SOIL, SOILS, STRATEGIES  # noqa: E402
 from .engine import Scenario, prepare  # noqa: E402
 
@@ -28,11 +28,11 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 
 
 class Weights(BaseModel):
-    income: float = 0.3
-    stability: float = 0.25
-    soil: float = 0.25
-    water: float = 0.1
-    pests: float = 0.1
+    """How much each criterion counts in the ranking (normalised server-side)."""
+    success: float = 0.45   # winter crop success rate (sown + enough water + no frost/heat at flowering)
+    summer: float = 0.2     # summer (soy) success rate, so a winter crop that hurts the soy is penalised
+    soil: float = 0.25      # bare-soil days, erosion exposure, residue
+    pests: float = 0.1      # crop-family repetition rule
 
 
 class ScenarioIn(BaseModel):
@@ -133,6 +133,7 @@ def simulate_ep(body: SimIn):
         "outlook": outlook,
         "explain": explain(strats, body.current, outlook, None, lang),
         "warnings": warnings,
+        "rules": RULES,
         "data": data_evidence(days, raw, lat, lon, cell_elev, field_elev, slope, sg, texture, soil_src, oni, warnings),
         "sources": ["NASA POWER (daily, AG community)", "NASA SRTM (OpenTopoData / Earth Engine)",
                     "NOAA CPC ONI", "ISRIC SoilGrids 2.0", "FAO-56 / FAO-33 crop coefficients"],

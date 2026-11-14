@@ -96,6 +96,7 @@ class CropRun:
     frost_events: int = 0
     forced: bool = False
     rain_mm: float = 0.0
+    water_at_sow: float = 0.0       # plant-available water in the future root zone at sowing (mm)
     note: str = ""
 
     @property
@@ -136,6 +137,11 @@ class CropRun:
         base = {"crop": self.crop, "campaign": self.campaign, "season": self.season,
                 "sown": self.sown.isoformat() if self.sown else None,
                 "harvest": self.harvest.isoformat() if self.harvest else None, "rain_mm": round(self.rain_mm)}
+        et_need = sum(self.etm.values())
+        base["et_need"] = round(et_need)
+        base["water_at_sow"] = round(self.water_at_sow)
+        base["water_ratio"] = round((self.rain_mm + self.water_at_sow) / et_need, 2) if et_need > 0 else None
+        base["forced"] = self.forced
         if self.state == "not_sown":
             return {**base, "rel": 0.0, "yield": 0, "class": "not_sown", "cause": "not_sown", "note": self.note,
                     "water": 0, "heat": 1, "frost": 1}
@@ -230,6 +236,8 @@ def simulate(clim: list[dict], cycle: list[tuple[str, str]], texture: str, phase
                 top_frac = soil.top / soil.top_cap
                 if top_frac >= item.c["sow_frac"] or d == item.sow_end and top_frac >= item.c["sow_frac"] * 0.6:
                     item.state, item.sown, active = "growing", d, item
+                    fd_max = max(0.0, (item.c["root_m"] - TOP_M) / (PROFILE_M - TOP_M))
+                    item.water_at_sow = soil.top + soil.deep * min(1.0, fd_max)
                     i_plan += 1
         # a winter item whose window ends while the summer crop is still growing
         if active is not None and i_plan < len(plan):

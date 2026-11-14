@@ -72,6 +72,19 @@ export default function DataPage({ data, sat, t, fmt }) {
         <button className="btn soft auto" onClick={() => download('datos-campo.json', JSON.stringify({ point: data.point, data: d, satellite: sat?.data || null }, null, 2), 'application/json')}>{t.downloadAll}</button>
       </div>
 
+      <section className="panel rules">
+        <h2 className="section-h">{t.rulesTitle}</h2>
+        <p className="lead">{t.rulesLead}</p>
+        <ol className="rule-list">
+          {[[t.rule1[0], t.rule1[1], t.rule1[2]],
+            [t.rule2[0], t.rule2[1](Math.round((data.rules?.water_ok ?? 0.8) * 100)), t.rule2[2]],
+            [t.rule3[0], t.rule3[1](data.rules?.heat_days_max ?? 2), t.rule3[2]]].map(([h, p, src], i) => (
+            <li key={i}><span className="num">{i + 1}</span><div><b>{h}</b><p>{p}</p><span className="src">{src}</span></div></li>
+          ))}
+        </ol>
+        <p className="small">{t.rulesNote}</p>
+      </section>
+
       <div className="src-grid">
         <Source name="NASA POWER" tag={t.nasaTag} nasa what={t.power.what} state="ok" t={t} csv="nasa-power-anual.csv" rows={p.annual}
           meta={[[t.query, `${p.query.latitude}, ${p.query.longitude}`], [t.period, `${p.query.start} → ${p.query.end}`],
